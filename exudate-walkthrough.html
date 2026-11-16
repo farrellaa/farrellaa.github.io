@@ -304,11 +304,111 @@
       color: var(--ink-2);
     }
 
-    .walkthrough-note {
+      .walkthrough-note {
       margin: 10px 0 0;
       font-size: 12.5px;
       line-height: 1.5;
       color: var(--ink-2);
+    }
+
+    .hist-card {
+      margin-top: 12px;
+      padding: 14px 16px;
+      background: var(--mist);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .hist-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 6px 12px;
+      flex-wrap: wrap;
+    }
+
+    .hist-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .hist-scope {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+
+    .hist-legend {
+      display: flex;
+      align-items: center;
+      gap: 6px 16px;
+      flex-wrap: wrap;
+      margin: 8px 0 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .hist-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .hist-legend-item[hidden] {
+      display: none;
+    }
+
+    .hist-swatch {
+      width: 18px;
+      height: 3px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .hist-swatch--base {
+      height: 2px;
+      background: repeating-linear-gradient(
+        to right,
+        #585860 0,
+        #585860 5px,
+        transparent 5px,
+        transparent 8px
+      );
+    }
+
+    .hist-swatch--cur {
+      background: var(--blue-bright);
+    }
+
+    .hist-swatch--thresh {
+      width: 2px;
+      height: 12px;
+      background: #b45309;
+    }
+
+    .hist-plot-wrap {
+      width: 100%;
+      background: var(--foam);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .hist-svg {
+      display: block;
+      width: 100%;
+      height: 196px;
+    }
+
+    .hist-caption {
+      margin: 10px 0 0;
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--ink-2);
+      max-width: 72ch;
     }
 
     @media (max-width: 600px) {
@@ -318,7 +418,8 @@
         min-height: 44px;
       }
 
-      .controls-card {
+      .controls-card,
+      .hist-card {
         padding: 12px;
       }
 
@@ -385,6 +486,34 @@
       </div>
     </div>
 
+    <section class="hist-card" aria-labelledby="hist-title">
+      <div class="hist-head">
+        <h2 class="hist-title" id="hist-title">Intensity distribution (retinal FOV)</h2>
+        <span class="hist-scope">% of retinal pixels · black border excluded</span>
+      </div>
+      <div class="hist-legend" id="hist-legend">
+        <span class="hist-legend-item">
+          <span class="hist-swatch hist-swatch--base" aria-hidden="true"></span>
+          <span id="hist-legend-base">Original green</span>
+        </span>
+        <span class="hist-legend-item">
+          <span class="hist-swatch hist-swatch--cur" aria-hidden="true"></span>
+          <span id="hist-legend-cur">Selected output</span>
+        </span>
+        <span class="hist-legend-item" id="hist-legend-thresh" hidden>
+          <span class="hist-swatch hist-swatch--thresh" aria-hidden="true"></span>
+          <span id="hist-legend-thresh-label">Rényi threshold</span>
+        </span>
+      </div>
+      <div class="hist-plot-wrap" id="hist-plot-wrap">
+        <svg class="hist-svg" id="hist-svg" role="img" aria-labelledby="hist-svg-title hist-svg-desc">
+          <title id="hist-svg-title">Green-channel intensity histogram within retinal field of view</title>
+          <desc id="hist-svg-desc">Loading retinal intensity histogram.</desc>
+        </svg>
+      </div>
+      <p class="hist-caption" id="hist-caption">Loading retinal field-of-view intensity distribution.</p>
+    </section>
+
     <p class="walkthrough-note">
       Browser processing demonstration on a sample IDRiD image; reported 86% accuracy is from the project report, not live classifier inference.
     </p>
@@ -449,11 +578,19 @@
         exGroundMask: new Uint8Array(W * H),
         rawRGBA: null,
         lanczosRGBA: null,
+        rawGreenGray: null,
         greenGray: null,
         claheGray: null,
         unsharpGray: null,
         finalBinary: null,
-        regions: []
+        regions: [],
+        fovCount: 0,
+        tRenyi: 180,
+        histRawGreen: null,
+        histGreen: null,
+        histClahe: null,
+        histUnsharp: null,
+        loadError: false
       };
 
       function decodeRuns(runs, len) {
@@ -472,10 +609,14 @@
         }
       }
 
-      function initFromIDRiD03(onReady) {
+      function initFromIDRiD03(onReady, onError) {
         const SW = W * 2;
         const SH = H * 2;
         const img = new Image();
+        img.onerror = () => {
+          cache.loadError = true;
+          if (typeof onError === 'function') onError();
+        };
         img.onload = () => {
           const off = document.createElement('canvas');
           off.width = SW;
@@ -489,6 +630,7 @@
 
           const lanczosRGBA = new Uint8ClampedArray(W * H * 4);
           const rawRGBA = new Uint8ClampedArray(W * H * 4);
+          const rawGreenGray = new Uint8ClampedArray(W * H);
           const greenGray = new Uint8ClampedArray(W * H);
           const fovRaw = new Uint8Array(W * H);
 
@@ -542,6 +684,7 @@
             }
           }
 
+          let fovCount = 0;
           for (let y = 0; y < H; y++) {
             for (let x = 0; x < W; x++) {
               const idx = y * W + x;
@@ -558,13 +701,18 @@
                 }
               }
               cache.fovMask[idx] = inside;
+              if (inside) fovCount++;
+              rawGreenGray[idx] = inside ? rawRGBA[idx * 4 + 1] : 0;
               greenGray[idx] = inside ? lanczosRGBA[idx * 4 + 1] : 0;
             }
           }
 
           cache.rawRGBA = rawRGBA;
           cache.lanczosRGBA = lanczosRGBA;
+          cache.rawGreenGray = rawGreenGray;
           cache.greenGray = greenGray;
+          cache.fovCount = fovCount;
+          cache.loadError = false;
           onReady();
         };
         img.src = IDRiD03_DATA_URI;
@@ -808,8 +956,277 @@
             finalMask[i] = 1;
           }
         }
+        cache.tRenyi = tRenyi;
+        cache.histRawGreen = computeHist(cache.rawGreenGray);
+        cache.histGreen = computeHist(cache.greenGray);
+        cache.histClahe = computeHist(cache.claheGray);
+        cache.histUnsharp = histUnsharp;
         cache.finalBinary = finalMask;
         cache.regions = extractCandidateBoxes(finalMask);
+      }
+
+      function normalizeHistPct(hist) {
+        const pct = new Float64Array(256);
+        if (!hist) return pct;
+        let total = 0;
+        for (let i = 0; i < 256; i++) total += hist[i];
+        if (total <= 0) return pct;
+        for (let i = 0; i < 256; i++) {
+          pct[i] = (hist[i] / total) * 100;
+        }
+        return pct;
+      }
+
+      function chooseYAxis(rawMax) {
+        const target = Math.max(0.2, rawMax * 1.1);
+        const steps = [0.1, 0.2, 0.25, 0.5, 1, 2, 2.5, 5, 10, 20, 25, 50];
+        let bestStep = 1;
+        let bestTicks = 3;
+        let bestTop = Infinity;
+        for (const n of [3, 4]) {
+          for (const s of steps) {
+            const top = n * s;
+            if (top >= target && top < bestTop) {
+              bestTop = top;
+              bestStep = s;
+              bestTicks = n;
+              break;
+            }
+          }
+        }
+        if (!isFinite(bestTop)) {
+          bestStep = Math.ceil(target / 3);
+          bestTicks = 3;
+          bestTop = bestStep * bestTicks;
+        }
+        const ticks = [];
+        for (let i = 0; i <= bestTicks; i++) {
+          ticks.push(Number((i * bestStep).toFixed(2)));
+        }
+        return { yMax: bestTop, ticks };
+      }
+
+      function peakSummary(pct) {
+        let bestBin = 0;
+        let bestVal = -1;
+        for (let i = 0; i < 256; i++) {
+          if (pct[i] > bestVal) {
+            bestVal = pct[i];
+            bestBin = i;
+          }
+        }
+        return { bin: bestBin, val: Math.max(0, bestVal) };
+      }
+
+      function getHistogramSpec(stageIdx) {
+        if (stageIdx === 0) {
+          return {
+            baseHist: cache.histRawGreen,
+            curHist: cache.histGreen,
+            baseLabel: 'Sampled green (before resize)',
+            curLabel: 'Lanczos green (resized)',
+            threshold: null,
+            caption: 'Lanczos resampling shrinks the image from 1072 × 712 to 536 × 356 while keeping the green-channel intensity distribution nearly identical across retinal FOV pixels.'
+          };
+        }
+        if (stageIdx === 1) {
+          return {
+            baseHist: cache.histGreen,
+            curHist: cache.histClahe,
+            baseLabel: 'Original green (resized)',
+            curLabel: 'CLAHE output',
+            threshold: null,
+            caption: 'Clip-limited adaptive histogram equalization (CLAHE) flattens and spreads the narrow retinal peak across more of the 0–255 range so dark vessels and bright lesions separate locally.'
+          };
+        }
+        if (stageIdx === 2) {
+          return {
+            baseHist: cache.histGreen,
+            curHist: cache.histUnsharp,
+            baseLabel: 'Original green (resized)',
+            curLabel: 'Unsharp output',
+            threshold: null,
+            caption: 'Unsharp masking sharpens high-contrast edges around bright lesions, slightly widening the upper intensity tail before thresholding while preserving the overall distribution.'
+          };
+        }
+        if (stageIdx === 3) {
+          return {
+            baseHist: cache.histGreen,
+            curHist: cache.histUnsharp,
+            baseLabel: 'Original green (resized)',
+            curLabel: 'Pre-threshold unsharp',
+            threshold: cache.tRenyi,
+            caption: `Rather than histogramming the binary mask, this chart shows the pre-threshold unsharp distribution with the Rényi threshold at T = ${cache.tRenyi}. Pixels at or above T (outside the annotated optic disc) are retained.`
+          };
+        }
+        return {
+          baseHist: cache.histGreen,
+          curHist: cache.histUnsharp,
+          baseLabel: 'Original green (resized)',
+          curLabel: 'Pre-threshold unsharp',
+          threshold: cache.tRenyi,
+          caption: `Candidate boxes group pixels at or above T = ${cache.tRenyi} (excluding the optic disc) into ${cache.regions.length} connected regions—shown against the pre-threshold unsharp values, not the RGB overlay colors.`
+        };
+      }
+
+      function formatPctTick(val, hasDecimal) {
+        if (val === 0) return '0%';
+        if (hasDecimal) return `${val.toFixed(1)}%`;
+        return `${Math.round(val)}%`;
+      }
+
+      function renderHistogram() {
+        const svg = document.getElementById('hist-svg');
+        const wrap = document.getElementById('hist-plot-wrap');
+        const baseLegend = document.getElementById('hist-legend-base');
+        const curLegend = document.getElementById('hist-legend-cur');
+        const threshLegend = document.getElementById('hist-legend-thresh');
+        const threshLabel = document.getElementById('hist-legend-thresh-label');
+        const captionEl = document.getElementById('hist-caption');
+        const svgTitleEl = document.getElementById('hist-svg-title');
+        const svgDescEl = document.getElementById('hist-svg-desc');
+        if (!svg || !wrap) return;
+
+        const rect = svg.getBoundingClientRect();
+        const W_SVG = Math.max(240, Math.round(rect.width || 640));
+        const H_SVG = 196;
+        svg.setAttribute('viewBox', `0 0 ${W_SVG} ${H_SVG}`);
+
+        const padL = 42;
+        const padR = 14;
+        const padT = 16;
+        const padB = 40;
+        const plotW = Math.max(80, W_SVG - padL - padR);
+        const plotH = H_SVG - padT - padB;
+        const baseLineY = padT + plotH;
+
+        const xForBin = (b) => padL + (b / 255) * plotW;
+
+        if (cache.loadError) {
+          baseLegend.textContent = 'Original green';
+          curLegend.textContent = 'Selected output';
+          threshLegend.hidden = true;
+          captionEl.textContent = 'Unable to load the sample retinal image, so the intensity distribution is unavailable.';
+          svgDescEl.textContent = captionEl.textContent;
+          svg.innerHTML = `
+            <title id="hist-svg-title">${svgTitleEl.textContent}</title>
+            <desc id="hist-svg-desc">${svgDescEl.textContent}</desc>
+            <rect x="${padL}" y="${padT}" width="${plotW}" height="${plotH}" fill="none" stroke="#dedee2" />
+            <text x="${padL + plotW / 2}" y="${padT + plotH / 2 + 4}" text-anchor="middle" fill="#66666d" font-size="12" font-family="Manrope, sans-serif">Image unavailable</text>
+          `;
+          notifyParentHeight();
+          return;
+        }
+
+        const spec = getHistogramSpec(state.stage);
+        baseLegend.textContent = spec.baseLabel;
+        curLegend.textContent = spec.curLabel;
+
+        const hasData = Boolean(spec.baseHist && spec.curHist && cache.fovCount > 0);
+        const basePct = normalizeHistPct(spec.baseHist);
+        const curPct = normalizeHistPct(spec.curHist);
+
+        let rawMax = 0;
+        if (hasData) {
+          for (let i = 0; i < 256; i++) {
+            if (basePct[i] > rawMax) rawMax = basePct[i];
+            if (curPct[i] > rawMax) rawMax = curPct[i];
+          }
+        }
+        const { yMax, ticks } = chooseYAxis(rawMax);
+        const hasDecimalTick = ticks.some((t) => Math.abs(t - Math.round(t)) > 1e-6);
+        const yForPct = (p) => baseLineY - Math.min(1, Math.max(0, p / yMax)) * plotH;
+
+        const showThresh = hasData && typeof spec.threshold === 'number' && !Number.isNaN(spec.threshold);
+        threshLegend.hidden = !showThresh;
+        if (showThresh) {
+          threshLabel.textContent = `Rényi threshold (T = ${spec.threshold})`;
+        }
+
+        const gridMarkup = ticks.map((tickVal) => {
+          const y = yForPct(tickVal).toFixed(1);
+          const isZero = tickVal === 0;
+          return `
+            <line x1="${padL}" y1="${y}" x2="${padL + plotW}" y2="${y}" stroke="${isZero ? '#c7c7cc' : '#ececf1'}" stroke-width="1" />
+            <text x="${padL - 6}" y="${(Number(y) + 3.5).toFixed(1)}" text-anchor="end" fill="#66666d" font-size="10.5" font-weight="600" font-family="Manrope, sans-serif">${formatPctTick(tickVal, hasDecimalTick)}</text>
+          `;
+        }).join('');
+
+        const xTicks = [0, 64, 128, 192, 255];
+        const xTicksMarkup = xTicks.map((bin, idx) => {
+          const x = xForBin(bin).toFixed(1);
+          const anchor = idx === 0 ? 'start' : (idx === xTicks.length - 1 ? 'end' : 'middle');
+          return `
+            <line x1="${x}" y1="${baseLineY}" x2="${x}" y2="${baseLineY + 4}" stroke="#b8b8bf" stroke-width="1" />
+            <text x="${x}" y="${baseLineY + 15}" text-anchor="${anchor}" fill="#66666d" font-size="10.5" font-weight="600" font-family="Manrope, sans-serif">${bin}</text>
+          `;
+        }).join('');
+
+        const centerAxisLabel = W_SVG < 350 ? 'Intensity (0–255)' : 'Green intensity (0–255)';
+        const xAxisLabelMarkup = `
+          <text x="${padL}" y="${baseLineY + 31}" text-anchor="start" fill="#424245" font-size="11" font-weight="700" font-family="Manrope, sans-serif">Dark</text>
+          <text x="${(padL + plotW / 2).toFixed(1)}" y="${baseLineY + 31}" text-anchor="middle" fill="#66666d" font-size="10.5" font-weight="600" font-family="Manrope, sans-serif">${centerAxisLabel}</text>
+          <text x="${padL + plotW}" y="${baseLineY + 31}" text-anchor="end" fill="#424245" font-size="11" font-weight="700" font-family="Manrope, sans-serif">Bright</text>
+        `;
+
+        let seriesMarkup = '';
+        let threshMarkup = '';
+
+        if (hasData) {
+          const curPts = [];
+          const basePts = [];
+          for (let i = 0; i < 256; i++) {
+            const x = xForBin(i).toFixed(2);
+            curPts.push(`${x},${yForPct(curPct[i]).toFixed(2)}`);
+            basePts.push(`${x},${yForPct(basePct[i]).toFixed(2)}`);
+          }
+          const areaPath = `M${xForBin(0).toFixed(2)},${baseLineY.toFixed(2)} L${curPts.join(' L')} L${xForBin(255).toFixed(2)},${baseLineY.toFixed(2)} Z`;
+          const curPath = `M${curPts.join(' L')}`;
+          const basePath = `M${basePts.join(' L')}`;
+
+          if (showThresh) {
+            const tx = xForBin(spec.threshold);
+            const bandW = Math.max(0, padL + plotW - tx);
+            const placeLeft = tx > padL + plotW - 64;
+            const labelX = placeLeft ? tx - 5 : tx + 5;
+            const labelAnchor = placeLeft ? 'end' : 'start';
+            threshMarkup = `
+              <rect x="${tx.toFixed(2)}" y="${padT}" width="${bandW.toFixed(2)}" height="${plotH}" fill="rgba(180, 83, 9, 0.08)" />
+              <line x1="${tx.toFixed(2)}" y1="${padT}" x2="${tx.toFixed(2)}" y2="${baseLineY}" stroke="#b45309" stroke-width="1.75" stroke-dasharray="5 3" />
+              <text x="${labelX.toFixed(2)}" y="${padT + 11}" text-anchor="${labelAnchor}" fill="#92400e" font-size="11" font-weight="700" font-family="Manrope, sans-serif" paint-order="stroke" stroke="#ffffff" stroke-width="3">T = ${spec.threshold}</text>
+            `;
+          }
+
+          seriesMarkup = `
+            <path d="${areaPath}" fill="rgba(0, 113, 227, 0.14)" />
+            <path d="${curPath}" fill="none" stroke="#0071e3" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+            <path d="${basePath}" fill="none" stroke="#585860" stroke-width="1.6" stroke-dasharray="4 3" stroke-linejoin="round" stroke-linecap="round" />
+          `;
+
+          const basePeak = peakSummary(basePct);
+          const curPeak = peakSummary(curPct);
+          const threshDesc = showThresh ? ` Rényi threshold marked at T = ${spec.threshold}.` : '';
+          svgDescEl.textContent = `Two-series intensity histogram across 0 (Dark) to 255 (Bright) on a shared vertical scale from 0% to ${formatPctTick(yMax, hasDecimalTick)} of retinal field-of-view pixels (black border excluded). ${spec.baseLabel} peaks near intensity ${basePeak.bin} (${basePeak.val.toFixed(1)}%). ${spec.curLabel} peaks near intensity ${curPeak.bin} (${curPeak.val.toFixed(1)}%).${threshDesc}`;
+        } else {
+          svgDescEl.textContent = 'Computing retinal field-of-view intensity histogram.';
+        }
+
+        const titleText = `Intensity distribution: ${spec.baseLabel} vs ${spec.curLabel}`;
+        svgTitleEl.textContent = titleText;
+        captionEl.textContent = hasData ? spec.caption : 'Computing retinal field-of-view intensity distribution.';
+
+        svg.innerHTML = `
+          <title id="hist-svg-title">${titleText}</title>
+          <desc id="hist-svg-desc">${svgDescEl.textContent}</desc>
+          ${gridMarkup}
+          <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${baseLineY}" stroke="#c7c7cc" stroke-width="1" />
+          ${threshMarkup}
+          ${seriesMarkup}
+          ${xTicksMarkup}
+          ${xAxisLabelMarkup}
+        `;
+
+        notifyParentHeight();
       }
 
       function renderStageToCanvas(canvas, stageIdx) {
@@ -904,6 +1321,8 @@
 
         const rightLabel = state.stage === 4 ? 'Candidate regions' : 'Processed';
         document.getElementById('after-tag').textContent = rightLabel;
+
+        renderHistogram();
       }
 
       function renderControls() {
@@ -1002,11 +1421,30 @@
       compareWrap.addEventListener('pointerup', () => { dragging = false; });
       compareWrap.addEventListener('pointercancel', () => { dragging = false; });
 
+      const histPlotWrap = document.getElementById('hist-plot-wrap');
+      if (typeof ResizeObserver === 'function' && histPlotWrap) {
+        let lastHistW = 0;
+        const histResizeObserver = new ResizeObserver(() => {
+          const w = Math.round(histPlotWrap.getBoundingClientRect().width);
+          if (w > 0 && w !== lastHistW) {
+            lastHistW = w;
+            renderHistogram();
+          }
+        });
+        histResizeObserver.observe(histPlotWrap);
+      }
+      window.addEventListener('resize', () => {
+        renderHistogram();
+      });
+
       renderControls();
+      renderHistogram();
       initFromIDRiD03(() => {
         runPipeline();
         updateViewport();
         notifyParentHeight();
+      }, () => {
+        renderHistogram();
       });
     })();
   </script>
