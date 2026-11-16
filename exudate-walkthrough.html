@@ -453,6 +453,19 @@
       }
     }
 
+    @media (max-width: 600px) {
+      .controls-top { display: block; }
+      .step-buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .step-btn { width: 100%; min-width: 0; min-height: 48px; padding: 10px 8px; font-size: 14px; }
+      .step-btn:last-child { grid-column: 1 / -1; }
+      .nav-arrows { margin-top: 10px; gap: 10px; }
+      .arrow-btn { min-height: 48px; font-size: 14px; }
+      .hist-legend { row-gap: 10px; }
+      .hist-caption, .walkthrough-note { font-size: 14px; line-height: 1.55; }
+      .expert-toggle { font-size: 14px; min-height: 48px; }
+      #split-range { min-height: 44px; touch-action: pan-y; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .step-btn,
       .arrow-btn {
