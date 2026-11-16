@@ -3,1812 +3,392 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#ffffff" />
-  <title>Prototype · Diabetic Retinopathy Exudate Detection · Farrell Astrada</title>
+  <title>Retinal Exudate Walkthrough</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --foam: #ffffff;
       --mist: #f5f5f7;
       --line: #dedee2;
-      --line-soft: #e8e8ed;
       --ink: #1d1d1f;
       --ink-2: #66666d;
-      --navy: #1d1d1f;
       --blue: #0066cc;
       --blue-bright: #0071e3;
       --blue-hover: #004f9e;
-      --blue-press: #003d7a;
       --sans: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      --mono: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      --ui-ease: 160ms ease;
-
-      /* Simulator dark stage tokens */
-      --sim-bg: #101114;
-      --sim-card: #1d2026;
-      --sim-border: #383b42;
-      --sim-muted: #b8cddd;
-      --sim-text: #eef5fa;
-      --sim-amber: #f2b705;
-      --sim-teal: #2dd4bf;
-      --sim-rose: #fb7185;
+      --ui-ease: 150ms ease;
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
+
+    html, body {
       margin: 0;
-      font-family: var(--sans);
-      font-size: 17px;
-      line-height: 1.62;
+      padding: 0;
+      background: transparent;
       color: var(--ink);
-      background: var(--foam);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.55;
       -webkit-font-smoothing: antialiased;
-      font-variant-numeric: tabular-nums lining-nums;
       overflow-x: clip;
     }
 
-    a { color: inherit; text-decoration: none; }
-    button, select, input { font: inherit; }
-    button, a, select { touch-action: manipulation; }
+    button, input { font: inherit; }
+    button { touch-action: manipulation; }
 
-    a:focus-visible,
     button:focus-visible,
-    select:focus-visible,
     input:focus-visible {
       outline: 3px solid var(--blue);
-      outline-offset: 3px;
+      outline-offset: 2px;
       box-shadow: 0 0 0 3px #ffffff;
     }
 
-    .detail-hero :is(a, button, select):focus-visible,
-    .sim-shell :is(a, button, select, input):focus-visible {
-      outline-color: #ffffff;
-      box-shadow: 0 0 0 3px #1d1d1f;
+    .walkthrough {
+      width: 100%;
+      max-width: 820px;
     }
 
-    /* ── Prototype Review Banner ── */
-    .proto-banner {
-      background: #fff8e6;
-      border-bottom: 1px solid #e6d39c;
-      color: #4a3800;
-      padding: 8px clamp(20px, 6vw, 96px);
-      font-size: 12.5px;
-      line-height: 1.45;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .proto-banner strong {
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      font-size: 11px;
-      margin-right: 8px;
-    }
-    .proto-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: #4a3800;
-      color: #fff8e6;
-      font-size: 10.5px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    /* ── Header ── */
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: var(--foam);
-    }
-    .nav {
-      min-height: 74.8px;
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(10px);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px clamp(22px, 6vw, 96px);
-      border-bottom: 1px solid var(--line-soft);
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .brand {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1.1;
-      color: var(--ink);
-    }
-    .navlinks {
-      display: flex;
-      align-items: center;
-      gap: clamp(12px, 2vw, 28px);
-      font-size: 13px;
-      font-weight: 650;
-      flex-wrap: wrap;
-    }
-    .navlinks a {
-      min-height: 44px;
-      display: inline-flex;
-      align-items: center;
-      border-bottom: 2px solid transparent;
-      transition: color var(--ui-ease), border-color var(--ui-ease);
-    }
-    .navlinks a:not(.cv):hover {
-      color: var(--blue);
-      border-bottom-color: var(--blue);
-    }
-    .navlinks a.active-nav {
-      color: var(--blue);
-      border-bottom-color: var(--blue);
-    }
-    .navlinks a.cv {
-      background: #1d1d1f;
-      color: #ffffff;
-      border: 1px solid #1d1d1f;
-      border-radius: 999px;
-      padding: 8px 14px;
-      font-size: 12px;
-      font-weight: 700;
-      min-height: 40px;
-    }
-    .navlinks a.cv:hover {
-      background: #000000;
-      border-color: #000000;
-    }
-
-    /* ── Detail Layout ── */
-    .detail {
-      padding: 0 clamp(24px, 6vw, 96px) 72px;
-    }
-    .detail-subnav {
-      background: var(--mist);
-      border-bottom: 1px solid var(--line);
-      margin: 0 calc(-1 * clamp(24px, 6vw, 96px));
-      padding: 12px clamp(24px, 6vw, 96px);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      font-size: 12px;
-    }
-    .back, .prev-next a {
-      display: inline-flex;
-      align-items: center;
-      min-height: 44px;
-      color: #424245;
-      font-weight: 600;
-      text-decoration: underline;
-      text-decoration-color: rgba(66, 66, 69, 0.38);
-      text-decoration-thickness: 1px;
-      text-underline-offset: 4px;
-      transition: color var(--ui-ease), text-decoration-color var(--ui-ease);
-    }
-    .back:hover, .prev-next a:hover {
-      color: var(--blue);
-      text-decoration-color: currentColor;
-    }
-    .prev-next {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    /* ── Dark Detail Hero ── */
-    .detail-hero {
-      background: #101114;
-      color: #eef5fa;
-      margin: 0 calc(-1 * clamp(24px, 6vw, 96px));
-      padding: 64px clamp(24px, 6vw, 96px) 56px;
-    }
-    .eyebrow, .mono {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.085em;
-      text-transform: uppercase;
-      margin: 0;
-    }
-    .eyebrow.dark { color: var(--blue); font-weight: 600; }
-    .detail-hero .eyebrow, .detail-kicker { color: #b8cddd; }
-    .detail-hero h1 {
-      font-family: var(--sans);
-      font-weight: 700;
-      font-size: clamp(34px, 4.8vw, 64px);
-      line-height: 1.04;
-      letter-spacing: -0.03em;
-      margin: 14px 0 10px;
-      max-width: 24ch;
-      color: #ffffff;
-      text-wrap: balance;
-      overflow-wrap: break-word;
-    }
-    .detail-kicker {
-      font-size: 12px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      margin: 0 0 16px;
-    }
-    .detail-lead {
-      font-size: 17px;
-      line-height: 1.6;
-      max-width: 68ch;
-      color: #dce6ef;
-      margin: 0 0 26px;
-      text-wrap: pretty;
-    }
-
-    .detail-kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin: 0 0 26px;
-    }
-    .detail-kpi {
-      background: #1d2026;
-      border: 1px solid #383b42;
-      border-radius: 12px;
-      padding: 14px 16px;
-    }
-    .detail-kpi b {
-      display: block;
-      font-size: 20px;
-      color: #ffffff;
-      letter-spacing: -0.02em;
-    }
-    .detail-kpi span {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: #b8cddd;
-      margin-top: 3px;
-    }
-    .detail-kpi small {
-      display: block;
-      font-size: 11px;
-      line-height: 1.45;
-      color: #9fb4c6;
-      margin-top: 5px;
-    }
-
-    .hatched-stage-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 8px;
-    }
-    .hatched-stage-bar button {
-      min-height: 44px;
-      background: #1d2026;
-      border: 1px solid #484c55;
-      border-radius: 8px;
-      color: #d5e2ee;
-      padding: 12px 14px;
-      text-align: left;
-      cursor: pointer;
-      font-size: 13px;
-      line-height: 1.35;
-      transition: background-color 150ms ease, border-color 150ms ease;
-    }
-    .hatched-stage-bar button:hover {
-      background: #262a31;
-      border-color: #6a7280;
-    }
-    .seg-num {
-      display: block;
-      font-size: 10px;
-      color: #9fb4c6;
-      letter-spacing: 0.08em;
-      margin-bottom: 2px;
-    }
-    .hatched-stage-bar button strong {
-      display: block;
-      font-size: 13.5px;
-      font-weight: 600;
-      line-height: 1.3;
-      color: #ffffff;
-    }
-    .hatched-stage-bar button small {
-      display: block;
-      font-size: 10.5px;
-      letter-spacing: 0.04em;
-      color: #b8cddd;
-      margin-top: 3px;
-    }
-    .hatched-stage-bar button.active-seg {
-      background: var(--blue-bright);
-      border-color: var(--blue-bright);
-      color: #ffffff;
-      box-shadow: inset 0 -3px 0 rgba(255, 255, 255, 0.5);
-    }
-    .hatched-stage-bar button.active-seg .seg-num,
-    .hatched-stage-bar button.active-seg small {
-      color: #ffffff;
-    }
-    .hero-stage-detail {
-      margin: 18px 0 0;
-      padding: 18px 20px;
-      background: #1d2026;
-      border: 1px solid #383b42;
-      border-left: 3px solid var(--blue-bright);
-      border-radius: 10px;
-      color: #d6dee6;
-      font-size: 14.5px;
-      line-height: 1.65;
-    }
-    .hero-stage-detail .mono { color: #b8cddd; }
-    .hero-stage-detail p {
-      margin: 8px 0 0;
-      max-width: 76ch;
-      color: #c6d0da;
-      text-wrap: pretty;
-    }
-
-    /* ── Metadata strip ── */
-    .detailmetrics {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-      padding: 26px 0 8px;
-    }
-    .detailmetrics > div {
-      border-top: 1px solid var(--line);
-      padding-top: 10px;
-    }
-    .detailmetrics small {
-      font-size: 10.5px;
-      font-weight: 700;
-      color: var(--blue);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .detailmetrics p {
-      font-size: 13px;
-      line-height: 1.5;
-      margin: 6px 0 0;
-      color: var(--ink-2);
-    }
-
-    /* ── Sections ── */
-    .detail section {
-      padding: 36px 0;
-      border-top: 1px solid var(--line);
-    }
-    .detail section:first-of-type { border-top: 0; }
-    .detail section h2 {
-      font-family: var(--sans);
-      font-weight: 650;
-      letter-spacing: -0.03em;
-      line-height: 1.14;
-      font-size: clamp(28px, 3.4vw, 40px);
-      margin: 10px 0 16px;
-      color: var(--ink);
-      text-wrap: balance;
-    }
-    .prose-p {
-      max-width: 66ch;
-      font-size: 17px;
-      line-height: 1.65;
-      margin: 0;
-      text-wrap: pretty;
-    }
-
-    /* ── Stagebar in Section 02 ── */
-    .stagebar {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin: 22px 0 16px;
-    }
-    .stagebar button {
-      background: var(--mist);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 11px 14px;
-      text-align: left;
-      min-width: 120px;
-      min-height: 56px;
-      cursor: pointer;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--blue);
-      transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
-    }
-    .stagebar button:hover {
-      background: #ececf1;
-      border-color: #c5c5cc;
-    }
-    .stagebar button span {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--ink);
-      margin-top: 4px;
-    }
-    .stagebar button.on {
-      background: #1d1d1f;
-      color: #b8cddd;
-      border-color: #1d1d1f;
-    }
-    .stagebar button.on span { color: #ffffff; }
-
-    .stageinfo {
-      background: var(--mist);
-      border-left: 3px solid var(--blue);
-      border-radius: 0 8px 8px 0;
-      padding: 18px 22px;
-      font-size: 15.5px;
-      max-width: 72ch;
-    }
-    .stageinfo-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-    .stageinfo-head .mono { color: var(--blue); font-weight: 700; }
-    .stageinfo p { margin: 0; color: var(--ink); line-height: 1.6; }
-
-    /* ── NEW: Interactive Before / After Pipeline Simulator ── */
-    .sim-shell {
-      margin-top: 28px;
-      background: var(--sim-bg);
-      color: var(--sim-text);
-      border: 1px solid #262930;
-      border-radius: 14px;
-      overflow: hidden;
-    }
-
-    .sim-disclosure {
-      background: #181c22;
-      border-bottom: 1px solid var(--sim-border);
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .sim-disclosure-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: #ffd666;
-    }
-    .sim-disclosure-tag::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: #ffd666;
-      flex-shrink: 0;
-    }
-    .sim-disclosure p {
-      margin: 0;
-      font-size: 12.5px;
-      color: #c2ccd6;
-      line-height: 1.45;
-      max-width: 78ch;
-    }
-
-    .sim-toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--sim-border);
-      flex-wrap: wrap;
-    }
-    .sim-control-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .sim-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--sim-muted);
-      margin-right: 4px;
-    }
-    .sim-select {
-      min-height: 40px;
-      background: var(--sim-card);
-      color: #ffffff;
-      border: 1px solid var(--sim-border);
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .sim-sample-chip {
-      min-height: 40px;
-      background: var(--sim-card);
-      color: #ffffff;
-      border: 1px solid var(--sim-border);
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 12.5px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .sim-sample-chip strong { color: #ffffff; font-weight: 700; }
-    .sim-sample-chip span { color: var(--sim-muted); font-weight: 500; font-size: 12px; }
-    .sim-check {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #d7e3ee;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .sim-check input { accent-color: var(--blue-bright); cursor: pointer; }
-    .sim-feat-note {
-      margin: 8px 0 0;
-      font-size: 11px;
-      line-height: 1.45;
-      color: var(--sim-muted);
-    }
-    .sim-attribution {
-      background: #14171c;
-      border-top: 1px solid var(--sim-border);
-      padding: 12px 20px;
-      font-size: 11.5px;
-      line-height: 1.5;
-      color: #b4c0cd;
-    }
-    .sim-attribution strong { color: #ffffff; }
-    .sim-attribution a { color: #7cc0ff; text-decoration: underline; }
-    .sim-seg-group {
-      display: inline-flex;
-      background: #171a1f;
-      border: 1px solid var(--sim-border);
-      border-radius: 8px;
-      padding: 3px;
-      gap: 3px;
-      flex-wrap: wrap;
-    }
-    .sim-seg-btn {
-      min-height: 36px;
-      padding: 0 12px;
-      border: 0;
-      border-radius: 6px;
-      background: transparent;
-      color: #c5d0db;
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 140ms ease, color 140ms ease;
-    }
-    .sim-seg-btn:hover { background: #262a33; color: #ffffff; }
-    .sim-seg-btn[aria-pressed="true"] {
-      background: var(--blue-bright);
-      color: #ffffff;
-    }
-
-    .sim-play-btn {
-      min-height: 40px;
-      padding: 0 16px;
-      border-radius: 999px;
-      border: 1px solid #4c5360;
-      background: var(--sim-card);
-      color: #ffffff;
-      font-size: 12.5px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background-color 140ms ease, border-color 140ms ease;
-    }
-    .sim-play-btn:hover {
-      background: #272c35;
-      border-color: #6d7788;
-    }
-    .sim-play-btn[aria-pressed="true"] {
-      background: var(--blue-bright);
-      border-color: var(--blue-bright);
-    }
-
-    /* Stage body grid: visual stage + live telemetry/inspector */
-    .sim-body {
-      display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(290px, 0.9fr);
-      gap: 20px;
-      padding: 20px;
-      align-items: start;
-    }
-
-    .sim-viewport-col { min-width: 0; }
-
-    /* Split-wipe viewport */
-    .sim-compare-wrap {
+    .compare-wrap {
       position: relative;
       width: 100%;
       aspect-ratio: 536 / 356;
       background: #060708;
-      border: 1px solid var(--sim-border);
-      border-radius: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
       overflow: hidden;
       user-select: none;
+      touch-action: none;
+      cursor: ew-resize;
     }
-    .sim-compare-wrap canvas {
+
+    .compare-wrap canvas {
       display: block;
       width: 100%;
       height: 100%;
     }
-    .sim-layer-before {
+
+    .layer-after,
+    .layer-before {
       position: absolute;
       inset: 0;
+    }
+
+    .layer-before {
       overflow: hidden;
     }
-    .sim-layer-after {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-    .sim-compare-wrap.interactive-detect .sim-layer-after {
-      pointer-events: auto;
-    }
-    .sim-divider {
+
+    .split-divider {
       position: absolute;
       top: 0;
       bottom: 0;
       left: 50%;
       width: 2px;
       background: #ffffff;
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.65);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
       pointer-events: none;
       z-index: 6;
     }
-    .sim-divider-knob {
+
+    .divider-knob {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 999px;
       background: var(--blue-bright);
       border: 2px solid #ffffff;
       color: #ffffff;
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
     }
 
-    .sim-corner-pill {
+    .corner-tag {
       position: absolute;
       top: 10px;
       z-index: 7;
-      background: rgba(16, 17, 20, 0.84);
+      background: rgba(16, 17, 20, 0.8);
       border: 1px solid rgba(255, 255, 255, 0.22);
-      color: #f3f6fa;
+      color: #ffffff;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 600;
+      line-height: 1.2;
       padding: 4px 10px;
       border-radius: 999px;
       pointer-events: none;
-      backdrop-filter: blur(4px);
+      max-width: 42%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .sim-corner-pill.left { left: 10px; }
-    .sim-corner-pill.right { right: 10px; border-color: rgba(0, 113, 227, 0.8); }
 
-    .sim-slider-bar {
+    .corner-tag.left { left: 10px; }
+    .corner-tag.right { right: 10px; border-color: rgba(0, 113, 227, 0.85); }
+
+    .slider-bar {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-top: 12px;
-      padding: 10px 14px;
-      background: var(--sim-card);
-      border: 1px solid var(--sim-border);
-      border-radius: 8px;
-    }
-    .sim-slider-bar label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--sim-muted);
-      white-space: nowrap;
-    }
-    .sim-slider-bar input[type="range"] {
-      flex: 1;
-      accent-color: var(--blue-bright);
-      min-height: 28px;
-      cursor: pointer;
-    }
-    .sim-slider-val {
-      font-size: 12px;
-      font-weight: 700;
-      color: #ffffff;
-      min-width: 42px;
-      text-align: right;
-    }
-
-    /* Side-by-side layout */
-    .sim-side-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-    .sim-pane {
-      background: #060708;
-      border: 1px solid var(--sim-border);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .sim-pane-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 12px;
-      background: #171a1f;
-      border-bottom: 1px solid var(--sim-border);
-      font-size: 11.5px;
-      font-weight: 700;
-      color: #d7e3ee;
-    }
-    .sim-pane canvas {
-      display: block;
-      width: 100%;
-      aspect-ratio: 536 / 356;
-      height: auto;
-    }
-
-    /* Filmstrip 5-step sequence */
-    .sim-filmstrip {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 10px;
-    }
-    .sim-film-card {
-      background: #171a1f;
-      border: 1px solid var(--sim-border);
-      border-radius: 10px;
-      overflow: hidden;
-      cursor: pointer;
-      text-align: left;
-      padding: 0;
-      color: inherit;
-      transition: border-color 140ms ease, transform 140ms ease;
-    }
-    .sim-film-card:hover { border-color: #6b7688; }
-    .sim-film-card.active {
-      border-color: var(--blue-bright);
-      box-shadow: 0 0 0 1px var(--blue-bright);
-    }
-    .sim-film-card canvas {
-      display: block;
-      width: 100%;
-      aspect-ratio: 536 / 356;
-      height: auto;
-      background: #060708;
-    }
-    .sim-film-meta {
-      padding: 8px 10px;
-    }
-    .sim-film-meta span {
-      display: block;
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--sim-muted);
-      letter-spacing: 0.05em;
-    }
-    .sim-film-meta strong {
-      display: block;
-      font-size: 12.5px;
-      color: #ffffff;
-      margin-top: 2px;
-    }
-
-    /* Step-specific subcontrols */
-    .sim-subcontrols {
-      margin-top: 12px;
-      padding: 12px 14px;
-      background: #171a1f;
-      border: 1px solid var(--sim-border);
-      border-radius: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
       flex-wrap: wrap;
-    }
-    .sim-param {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex: 1 1 240px;
-    }
-    .sim-param label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--sim-muted);
-      white-space: nowrap;
-    }
-    .sim-param input[type="range"] {
-      flex: 1;
-      accent-color: var(--blue-bright);
-      cursor: pointer;
-    }
-    .sim-param output {
-      font-size: 12px;
-      font-weight: 700;
-      color: #ffffff;
-      min-width: 44px;
-      text-align: right;
-    }
-
-    /* Right column: Histogram + Region Inspector + Metrics */
-    .sim-inspector {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      min-width: 0;
-    }
-    .sim-card {
-      background: var(--sim-card);
-      border: 1px solid var(--sim-border);
-      border-radius: 10px;
-      padding: 14px 16px;
-    }
-    .sim-card-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .sim-card-head h3 {
-      margin: 0;
-      font-size: 13.5px;
-      font-weight: 700;
-      color: #ffffff;
-    }
-    .sim-card-head span {
-      font-size: 11px;
-      color: var(--sim-muted);
-    }
-
-    .sim-hist-canvas {
-      display: block;
-      width: 100%;
-      height: 124px;
-      background: #121418;
-      border: 1px solid #2b2f37;
-      border-radius: 6px;
-    }
-    .sim-legend {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-      font-size: 11px;
-      color: #c7d2de;
-    }
-    .sim-legend-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .sim-swatch {
-      width: 10px;
-      height: 10px;
-      border-radius: 2px;
-      display: inline-block;
-    }
-
-    .sim-stat-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-    }
-    .sim-stat {
-      background: #14171c;
-      border: 1px solid #2c3039;
-      border-radius: 6px;
-      padding: 8px 10px;
-    }
-    .sim-stat small {
-      display: block;
-      font-size: 10.5px;
-      color: var(--sim-muted);
-    }
-    .sim-stat strong {
-      display: block;
-      font-size: 14px;
-      color: #ffffff;
-      margin-top: 2px;
-    }
-
-    /* Candidate regions table in simulator */
-    .sim-region-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 210px;
-      overflow-y: auto;
-    }
-    .sim-region-btn {
-      width: 100%;
-      text-align: left;
-      background: #14171c;
-      border: 1px solid #2c3039;
-      border-radius: 6px;
-      padding: 8px 10px;
-      color: #e5edf5;
-      font-size: 12px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      transition: border-color 140ms ease, background-color 140ms ease;
-    }
-    .sim-region-btn:hover { background: #1e222a; border-color: #4f5766; }
-    .sim-region-btn.selected {
-      border-color: var(--blue-bright);
-      background: #192638;
-    }
-    .sim-pill-ex {
-      font-size: 10.5px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: rgba(45, 212, 191, 0.16);
-      color: #5eead4;
-      border: 1px solid rgba(45, 212, 191, 0.4);
-      white-space: nowrap;
-    }
-    .sim-pill-non {
-      font-size: 10.5px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: rgba(251, 113, 133, 0.14);
-      color: #fda4af;
-      border: 1px solid rgba(251, 113, 133, 0.35);
-      white-space: nowrap;
-    }
-
-    .sim-feat-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 11.5px;
-      margin-top: 8px;
-    }
-    .sim-feat-table th,
-    .sim-feat-table td {
-      padding: 5px 6px;
-      border-bottom: 1px solid #2b2f37;
-      text-align: left;
-    }
-    .sim-feat-table th {
-      color: var(--sim-muted);
-      font-weight: 600;
-      font-size: 10.5px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-    .sim-feat-table td:not(:first-child) { text-align: right; }
-
-    /* ── System Notes, Eval Table, Limits, Next Banner ── */
-    .notes p {
-      display: grid;
-      grid-template-columns: 42px 1fr;
-      gap: 14px;
-      border-bottom: 1px solid var(--line);
-      padding: 14px 0;
-      font-size: 15.5px;
-      margin: 0;
-      max-width: 68ch;
-    }
-    .notes span {
-      font-weight: 600;
-      color: var(--blue);
-    }
-
-    .eval-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.85fr);
-      gap: 24px;
-      align-items: start;
-      margin-top: 16px;
-    }
-
-    .eval-table-wrap { overflow-x: auto; }
-    .eval-table {
-      width: 100%;
-      border-collapse: collapse;
+      margin-top: 10px;
+      padding: 8px 14px;
       background: var(--mist);
       border: 1px solid var(--line);
+      border-radius: 10px;
     }
-    .eval-table th, .eval-table td {
-      text-align: left;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--line-soft);
-      font-size: 14px;
-      vertical-align: top;
-    }
-    .eval-table th {
-      background: #1d1d1f;
-      color: #eef5fa;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .eval-table td strong { color: var(--blue); font-weight: 650; }
-    .eval-val { white-space: nowrap; font-weight: 600; }
 
-    .eval-chart-card {
+    .slider-bar label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink-2);
+      white-space: nowrap;
+    }
+
+    .slider-bar input[type="range"] {
+      flex: 1 1 120px;
+      min-width: 0;
+      min-height: 28px;
+      accent-color: var(--blue-bright);
+      cursor: pointer;
+    }
+
+    .slider-val {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      min-width: 38px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .controls-card {
+      margin-top: 12px;
+      padding: 14px 16px;
       background: var(--mist);
       border: 1px solid var(--line);
       border-radius: 12px;
-      padding: 18px 20px;
     }
-    .eval-chart-card h3 {
-      margin: 0 0 4px;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--ink);
-    }
-    .eval-chart-card p {
-      margin: 0 0 14px;
-      font-size: 12.5px;
-      color: var(--ink-2);
-      line-height: 1.45;
-    }
-    .bar-row {
-      margin-bottom: 12px;
-    }
-    .bar-row:last-of-type { margin-bottom: 0; }
-    .bar-row-head {
+
+    .controls-top {
       display: flex;
       justify-content: space-between;
-      font-size: 12.5px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .bar-track {
-      height: 10px;
-      background: #e2e2e7;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    .bar-fill {
-      height: 100%;
-      background: var(--blue);
-      border-radius: 999px;
-    }
-    .bar-fill.muted { background: #6e6e73; }
-    .bar-note {
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid var(--line);
-      font-size: 11.5px;
-      color: var(--ink-2);
-      line-height: 1.45;
-    }
-
-    .detail .limits {
-      background: #101114;
-      color: #eef5fa;
-      padding: 34px 36px;
-      margin-top: 28px;
-      border-left: 4px solid var(--blue-bright);
-      border-radius: 0 12px 12px 0;
-    }
-    .detail .limits .eyebrow { color: #b8cddd; }
-    .detail .limits h2 {
-      font-size: clamp(26px, 3.2vw, 34px);
-      color: #ffffff;
-    }
-    .detail .limits p { color: #dce6ef; }
-
-    .detail-links-row {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-top: 22px;
-    }
-    .button, .button-dark, .button-secondary {
-      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      min-height: 44px;
-      padding: 0 22px;
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.2;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .step-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      flex: 1 1 auto;
+    }
+
+    .step-btn {
+      min-height: 40px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--foam);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
       transition: background-color var(--ui-ease), border-color var(--ui-ease), color var(--ui-ease);
     }
-    .button, .button-dark {
-      background: var(--blue-bright);
-      color: #ffffff;
-      border: 1px solid var(--blue-bright);
-    }
-    .button:hover, .button-dark:hover {
-      background: #0077ed;
-      border-color: #0077ed;
-    }
-    .button-secondary {
-      background: transparent;
-      color: var(--blue);
-      border: 1px solid var(--blue);
-      font-weight: 600;
-    }
-    .limits .button-secondary {
-      color: #8cc4ff;
-      border-color: #8cc4ff;
-    }
-    .limits .button-secondary:hover {
-      background: rgba(140, 196, 255, 0.14);
+
+    .step-btn:hover {
+      background: #ececf1;
+      border-color: #c7c7cc;
     }
 
-    .next-plate-banner {
-      margin-top: 44px;
-      padding: 28px 32px;
-      background: var(--mist);
-      border: 1px solid var(--line);
-      border-radius: 12px;
+    .step-btn[aria-selected="true"] {
+      background: var(--blue-bright);
+      border-color: var(--blue-bright);
+      color: #ffffff;
+    }
+
+    .nav-arrows {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
+      gap: 6px;
+      flex-shrink: 0;
     }
-    .next-plate-banner .mono { color: var(--blue); font-weight: 700; }
-    .next-plate-banner h3 {
-      font-weight: 650;
-      font-size: clamp(22px, 2.4vw, 28px);
-      line-height: 1.2;
-      letter-spacing: -0.02em;
-      margin: 6px 0 0;
+
+    .arrow-btn {
+      min-height: 40px;
+      padding: 6px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--foam);
       color: var(--ink);
-      max-width: 28ch;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color var(--ui-ease), border-color var(--ui-ease), color var(--ui-ease);
     }
-    .next-plate-banner p {
+
+    .arrow-btn:hover:not(:disabled) {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .arrow-btn:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .step-caption {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .step-caption strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .step-caption p {
+      margin: 4px 0 0;
       font-size: 14px;
       line-height: 1.55;
       color: var(--ink-2);
-      max-width: 60ch;
-      margin: 6px 0 0;
+      max-width: 68ch;
     }
 
-    /* ── Footer: white sketch ── */
-    .sketch-footer {
-      position: relative;
-      width: 100%;
-      margin-top: 12px;
-      background: #ffffff;
-      color: var(--ink);
+    .expert-row {
+      margin-top: 10px;
+      padding-top: 10px;
       border-top: 1px solid var(--line);
-      overflow: hidden;
-    }
-    .sketch-stage {
-      position: relative;
-      z-index: 2;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: clamp(28px, 3.6vw, 44px) clamp(24px, 5vw, 56px) clamp(16px, 2.6vw, 30px);
-    }
-    .sketch-top {
-      display: grid;
-      grid-template-columns: minmax(220px, 1.35fr) auto minmax(200px, auto);
-      gap: 20px clamp(28px, 4.5vw, 64px);
-      align-items: start;
-    }
-    .sketch-brand strong {
-      display: block;
-      font-size: clamp(19px, 2.2vw, 22px);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.18;
-    }
-    .sketch-brand p {
-      margin: 8px 0 0;
-      font-size: 13px;
-      line-height: 1.55;
-      color: var(--ink-2);
-    }
-    .sketch-col { display: flex; flex-direction: column; min-width: 0; }
-    .sketch-label {
-      margin: 0 0 4px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      color: var(--ink-2);
-    }
-    .sketch-col a {
       display: flex;
       align-items: center;
-      min-height: 44px;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: underline;
-      text-decoration-color: rgba(29, 29, 31, 0.28);
-      text-underline-offset: 4px;
-      overflow-wrap: anywhere;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
     }
-    .sketch-col a:hover { color: var(--blue); text-decoration-color: currentColor; }
-    .sketch-place { margin: 4px 0 0; font-size: 12px; color: var(--ink-2); }
-    .sketch-projects {
-      margin-top: 18px;
-      padding-top: 16px;
-      border-top: 1px solid var(--line-soft);
+
+    .expert-row[hidden] {
+      display: none;
     }
-    .sketch-proj-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: clamp(24px, 4vw, 48px);
-      margin: 4px 0 0;
-      padding: 0;
-      list-style: none;
-    }
-    .sketch-proj-grid a {
-      display: grid;
-      grid-template-columns: 24px minmax(0, 1fr);
-      align-items: baseline;
-      align-content: center;
+
+    .expert-toggle {
+      display: inline-flex;
+      align-items: center;
       gap: 8px;
-      min-height: 44px;
-      padding: 4px 0;
+      min-height: 36px;
       font-size: 13px;
       font-weight: 600;
-    }
-    .sketch-proj-num { font-size: 11px; font-weight: 700; color: var(--ink-2); }
-    .sketch-proj-title {
-      text-decoration: underline;
-      text-decoration-color: rgba(29, 29, 31, 0.26);
-      text-underline-offset: 4px;
-    }
-    .sketch-proj-grid a:hover .sketch-proj-title {
-      color: var(--blue);
-      text-decoration-color: currentColor;
-    }
-    .sketch-art {
-      width: 100%;
-      pointer-events: none;
-      user-select: none;
-      margin-top: 6px;
-    }
-    .sketch-art svg {
-      display: block;
-      width: 100%;
-      height: clamp(160px, 20vw, 260px);
+      color: var(--ink);
+      cursor: pointer;
     }
 
-    /* ── Responsive Breakpoints ── */
-    @media (max-width: 1024px) {
-      .sim-body { grid-template-columns: 1fr; }
-      .eval-layout { grid-template-columns: 1fr; }
-      .sim-filmstrip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .expert-toggle input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--blue-bright);
+      cursor: pointer;
     }
 
-    @media (max-width: 960px) {
-      .detail-kpi-grid,
-      .detailmetrics {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    .expert-legend {
+      font-size: 12px;
+      color: var(--ink-2);
     }
 
-    @media (max-width: 700px) {
-      .detail-kpi-grid,
-      .detailmetrics {
-        grid-template-columns: 1fr;
-      }
-      .sim-side-grid { grid-template-columns: 1fr; }
-      .sim-filmstrip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .sketch-top {
-        grid-template-columns: minmax(0, 96px) minmax(0, 1fr);
-        gap: 14px 18px;
-      }
-      .sketch-brand { grid-column: 1 / -1; }
-      .sketch-proj-grid { grid-template-columns: 1fr; }
-      .detail-hero h1 { font-size: clamp(28px, 8.5vw, 34px); }
+    .walkthrough-note {
+      margin: 10px 0 0;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--ink-2);
     }
 
-    @media (max-width: 430px) {
-      .nav {
-        min-height: 64px;
-        padding: 10px 20px;
+    @media (max-width: 600px) {
+      .step-btn,
+      .arrow-btn,
+      .expert-toggle {
+        min-height: 44px;
       }
-      .brand { font-size: 21px; }
-      .navlinks { gap: 16px; }
-      .navlinks .nav-profile { display: none; }
-      .detail { padding-inline: 20px; }
-      .detail-subnav, .detail-hero {
-        margin-inline: -20px;
-        padding-inline: 20px;
-      }
-      .detail-hero { padding-top: 40px; padding-bottom: 36px; }
-      .detail section { padding: 28px 0; }
-      .sim-toolbar, .sim-body, .sim-disclosure { padding: 14px; }
-      .sim-filmstrip { grid-template-columns: 1fr; }
-      .eval-table th, .eval-table td { padding: 10px 12px; }
-      .detail .limits { padding: 26px 20px; }
-      .next-plate-banner { padding: 22px 20px; }
-    }
 
-    @media (max-width: 360px) {
-      .nav { padding-inline: 16px; }
-      .detail { padding-inline: 16px; }
-      .detail-subnav, .detail-hero {
-        margin-inline: -16px;
-        padding-inline: 16px;
+      .controls-card {
+        padding: 12px;
+      }
+
+      .nav-arrows {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .arrow-btn {
+        flex: 1 1 0;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      *, *::before, *::after { transition: none !important; }
-    }
-
-    @media (forced-colors: active) {
-      .hatched-stage-bar button.active-seg,
-      .stagebar button.on,
-      .sim-seg-btn[aria-pressed="true"] {
-        outline: 2px solid Highlight;
-        outline-offset: -2px;
+      .step-btn,
+      .arrow-btn {
+        transition: none;
       }
     }
   </style>
-<style>
-body > .proto-banner, body > .topbar, body > .sketch-footer, .detail > :not(#method-section), #method-section > :not(.sim-shell) { display:none !important; }
-html, body { margin:0; padding:0; background:transparent; }
-.detail { max-width:none; margin:0; padding:0; }
-.detail section#method-section { padding:0; border:0; }
-</style></head>
+</head>
 <body>
-  <div class="proto-banner" role="note">
-    <div>
-      <span class="proto-badge">Review Prototype</span>
-      <strong>Standalone mockup for Project 03 detail page</strong>
-      Production files in <code>src/</code> are unchanged. Interactive simulator uses authentic <code>IDRiD_03.jpg</code> and its expert masks (<code>IDRiD_03_OD.tif</code>, <code>IDRiD_03_EX.tif</code>) from the IDRiD dataset (CC BY 4.0); browser outputs are client-side approximations, not exact notebook outputs or a trained model.
-    </div>
-  </div>
-
-  <header class="topbar">
-    <nav class="nav" aria-label="Primary navigation">
-      <a class="brand" href="#top">Portfolio</a>
-      <div class="navlinks">
-        <a href="#top" class="nav-profile">Profile</a>
-        <a href="#method-section" class="active-nav" aria-current="page">Projects</a>
-        <a class="cv" href="#eval-section">CV (PDF) ↗</a>
+  <main class="walkthrough" id="walkthrough-root">
+    <div class="compare-wrap" id="compare-wrap">
+      <div class="layer-after">
+        <canvas id="canvas-after" width="536" height="356" aria-label="Processed retinal image for the selected step"></canvas>
       </div>
-    </nav>
-  </header>
-
-  <main class="detail" id="top">
-    <div class="detail-subnav">
-      <a class="back" href="#top" title="Prototype anchor">← All projects</a>
-      <div class="prev-next">
-        <a href="#top" title="Prototype anchor">← 02 · BITalino reader</a>
-        <span>·</span>
-        <a href="#top" title="Prototype anchor">04 · Hand tracking →</a>
+      <div class="layer-before" id="before-clip">
+        <canvas id="canvas-before" width="536" height="356" aria-label="Original retinal fundus photograph"></canvas>
       </div>
+      <div class="split-divider" id="split-divider">
+        <div class="divider-knob" aria-hidden="true">&#x2194;</div>
+      </div>
+      <span class="corner-tag left">Original</span>
+      <span class="corner-tag right" id="after-tag">Processed</span>
     </div>
 
-    <header class="detail-hero">
-      <p class="eyebrow">CASE STUDY · 03 / 06 · MEDICAL VISION &amp; IMAGING</p>
-      <h1>Diabetic Retinopathy Exudate Detection</h1>
-      <p class="detail-kicker">Group Project · Feb – Jul 2025</p>
-      <p class="detail-lead">
-        A group project that identifies candidate exudate regions in retinal photographs, then classifies them using image features. The pipeline compares four classical machine-learning models on IDRiD images.
-      </p>
+    <div class="slider-bar">
+      <label for="split-range">Original / Processed</label>
+      <input type="range" id="split-range" min="0" max="100" value="50" aria-label="Original and processed comparison split percentage" />
+      <span class="slider-val" id="split-val">50%</span>
+    </div>
 
-      <div class="detail-kpi-grid">
-        <div class="detail-kpi">
-          <b>86 / 87 / 86 / 86 %</b>
-          <span>SVM region classification</span>
-          <small>Report-reported accuracy / precision / recall / F1 on candidate regions (Table 6.3)</small>
-        </div>
-        <div class="detail-kpi">
-          <b>4</b>
-          <span>Classifiers compared</span>
-          <small>SVM, Random Forest, KNN, and logistic regression</small>
-        </div>
-        <div class="detail-kpi">
-          <b>81</b>
-          <span>IDRiD images</span>
-          <small>With exudate and optic-disc ground truth</small>
-        </div>
-        <div class="detail-kpi">
-          <b>No. 000938547</b>
-          <span>Copyright registration</span>
-          <small>Listed co-creator; copyright holder Institut Teknologi Bandung</small>
+    <div class="controls-card">
+      <div class="controls-top">
+        <div class="step-buttons" id="step-buttons" role="tablist" aria-label="Processing stages"></div>
+        <div class="nav-arrows">
+          <button type="button" class="arrow-btn" id="prev-step">&#x2190; Previous</button>
+          <button type="button" class="arrow-btn" id="next-step">Next &#x2192;</button>
         </div>
       </div>
 
-      <div class="hatched-stage-bar" role="tablist" aria-label="Pipeline step inspector" id="hero-tablist"></div>
+      <div class="step-caption" id="step-caption" aria-live="polite">
+        <strong id="step-title">Step 1 of 5 &#xb7; Resize</strong>
+        <p id="step-desc"></p>
+      </div>
 
-      <div class="hero-stage-detail" id="hero-stage-detail-panel" role="tabpanel" aria-live="polite">
-        <span class="mono" id="hero-step-label">STEP 01 · Lanczos</span>
-        <p id="hero-step-plain"></p>
-      </div>
-    </header>
-
-    <div class="detailmetrics">
-      <div>
-        <small>Data &amp; hardware</small>
-        <p>IDRiD fundus image set (81 images with exudate and optic-disc annotations) · classical machine learning only</p>
-      </div>
-      <div>
-        <small>Methods</small>
-        <p>Lanczos resize · green-channel CLAHE · unsharp masking · Renyi entropy threshold · optic-disc subtraction · 8-feature region classification (SVM, Random Forest, KNN, logistic regression)</p>
-      </div>
-      <div>
-        <small>Software &amp; systems</small>
-        <p>Python · OpenCV · NumPy · scikit-learn</p>
-      </div>
-      <div>
-        <small>Evaluation</small>
-        <p>Report-reported region classification: SVM 86 / 87 / 86 / 86 % (accuracy / precision / recall / F1) · Random Forest, KNN, and logistic regression compared on the same task · 81 IDRiD images · Indonesian copyright registration No. 000938547</p>
+      <div class="expert-row" id="expert-row" hidden>
+        <label class="expert-toggle">
+          <input type="checkbox" id="expert-check" />
+          Show expert annotation
+        </label>
+        <span class="expert-legend" id="expert-legend">Cyan outline: candidate regions</span>
       </div>
     </div>
 
-    <section>
-      <p class="eyebrow dark">01 · PROBLEM</p>
-      <h2>Context and question.</h2>
-      <p class="prose-p">
-        Can a classical pipeline find candidate exudate regions in a fundus photograph without treating the optic disc or uneven illumination as pathology? The question is region-level: which bright candidates contain exudate, not a pixel-perfect segmentation.
-      </p>
-    </section>
-
-    <section id="method-section">
-      <p class="eyebrow dark">02 · METHOD</p>
-      <h2>How the work was done.</h2>
-      <p class="prose-p">
-        Select a step to inspect its parameters, handoffs, and simulated before/after transformation.
-      </p>
-
-      <div class="stagebar" id="sec2-stagebar"></div>
-
-      <div class="stageinfo" id="stage-detail-panel" role="region" aria-live="polite" aria-label="Pipeline step details">
-        <div class="stageinfo-head">
-          <span class="mono" id="sec2-step-num">STEP 01 OF 5 · LANCZOS</span>
-          <strong id="sec2-step-spec">Spatial standardization</strong>
-        </div>
-        <p id="sec2-step-detail"></p>
-      </div>
-
-      <!-- Interactive Before/After Pipeline Simulator -->
-      <div class="sim-shell" aria-label="Interactive before/after preprocessing and detection simulator">
-        <div class="sim-disclosure">
-          <span class="sim-disclosure-tag">Authentic IDRiD_03.jpg input · Client-side browser approximation</span>
-          <p>
-            Runs live in-browser image math on authentic <code>IDRiD_03.jpg</code> (1/4-scale 1072 × 712 embedded copy of the 4288 × 2848 photograph → browser Lanczos3 536 × 356, green-channel tile CLAHE, unsharp masking, maximum Rényi-entropy thresholding, subtraction of the actual <code>IDRiD_03_OD.tif</code> annotation, and 8-connected feature extraction). Provenance: <code>IDRiD_03.jpg</code> is verified in Report Figures 6.4 &amp; 6.5 (panel 3) and notebook Cell 140 (Figures 6.2/6.8/6.9 use <code>IDRiD_01.jpg</code>; Page 4 figures 4.1–4.2 are unverified). Step 05 shows an illustrative contrast heuristic next to actual <code>IDRiD_03_EX.tif</code> overlap — not a trained model and not exact notebook outputs. Table 6.3 metrics remain report-reported.
-          </p>
-        </div>
-
-        <div class="sim-toolbar">
-          <div class="sim-control-group">
-            <span class="sim-label">Dataset input</span>
-            <div class="sim-sample-chip" title="IDRiD Segmentation Set (Porwal et al., Data 2018, DOI: 10.3390/data3030025, CC BY 4.0)">
-              <strong>IDRiD_03.jpg</strong>
-              <span>4288 × 2848 source → 536 × 356 (1/8)</span>
-            </div>
-          </div>
-
-          <div class="sim-control-group">
-            <span class="sim-label">Compare view</span>
-            <div class="sim-seg-group" role="group" aria-label="Comparison view mode">
-              <button type="button" class="sim-seg-btn" id="mode-split" aria-pressed="true">Split wipe</button>
-              <button type="button" class="sim-seg-btn" id="mode-side" aria-pressed="false">Side-by-side</button>
-              <button type="button" class="sim-seg-btn" id="mode-strip" aria-pressed="false">5-step sequence</button>
-            </div>
-          </div>
-
-          <div class="sim-control-group">
-            <button type="button" class="sim-play-btn" id="play-seq-btn" aria-pressed="false">
-              ▶ Play 01→05
-            </button>
-          </div>
-        </div>
-
-        <div class="sim-body">
-          <div class="sim-viewport-col">
-            <!-- Mode 1: Split Wipe -->
-            <div id="view-split">
-              <div class="sim-compare-wrap" id="compare-wrap">
-                <div class="sim-layer-after">
-                  <canvas id="canvas-after" width="536" height="356" aria-label="After image for current pipeline step"></canvas>
-                </div>
-                <div class="sim-layer-before" id="before-clip">
-                  <canvas id="canvas-before" width="536" height="356" aria-label="Before reference image"></canvas>
-                </div>
-                <div class="sim-divider" id="split-divider">
-                  <div class="sim-divider-knob" aria-hidden="true">↔</div>
-                </div>
-                <span class="sim-corner-pill left" id="before-pill">BEFORE · IDRiD_03 source (1072×712 sample)</span>
-                <span class="sim-corner-pill right" id="after-pill">STEP 01 · Lanczos 536×356</span>
-              </div>
-
-              <div class="sim-slider-bar">
-                <label for="split-range">Before / After split</label>
-                <input type="range" id="split-range" min="0" max="100" value="52" aria-label="Before and after split position percentage" />
-                <span class="sim-slider-val" id="split-val">52%</span>
-              </div>
-            </div>
-
-            <!-- Mode 2: Side-by-Side -->
-            <div id="view-side" hidden>
-              <div class="sim-side-grid">
-                <div class="sim-pane">
-                  <div class="sim-pane-head">
-                    <span>BEFORE</span>
-                    <span id="side-before-label">IDRiD_03 source</span>
-                  </div>
-                  <canvas id="canvas-side-before" width="536" height="356"></canvas>
-                </div>
-                <div class="sim-pane">
-                  <div class="sim-pane-head">
-                    <span>AFTER</span>
-                    <span id="side-after-label">Step 01 · Lanczos</span>
-                  </div>
-                  <canvas id="canvas-side-after" width="536" height="356"></canvas>
-                </div>
-              </div>
-            </div>
-
-            <!-- Mode 3: 5-Step Sequence Filmstrip -->
-            <div id="view-strip" hidden>
-              <div class="sim-filmstrip" id="filmstrip-grid"></div>
-            </div>
-
-            <!-- Contextual Controls for Active Step -->
-            <div class="sim-subcontrols" id="step-subcontrols"></div>
-          </div>
-
-          <!-- Right Inspector Column -->
-          <aside class="sim-inspector" aria-label="Pipeline telemetry and feature inspector">
-            <div class="sim-card">
-              <div class="sim-card-head">
-                <h3>Intensity distribution (FOV)</h3>
-                <span id="hist-subtitle">Before vs After green-channel</span>
-              </div>
-              <canvas class="sim-hist-canvas" id="hist-canvas" width="360" height="124" aria-label="Intensity histogram comparing before and after states"></canvas>
-              <div class="sim-legend" id="hist-legend">
-                <span class="sim-legend-item"><span class="sim-swatch" style="background:#7d8794;"></span>Before</span>
-                <span class="sim-legend-item"><span class="sim-swatch" style="background:#38bdf8;"></span>Current step</span>
-                <span class="sim-legend-item" id="legend-thresh" hidden><span class="sim-swatch" style="background:#f2b705;"></span>Rényi threshold T*</span>
-              </div>
-            </div>
-
-            <div class="sim-card">
-              <div class="sim-card-head">
-                <h3>Browser step telemetry</h3>
-                <span>Live IDRiD_03 metrics</span>
-              </div>
-              <div class="sim-stat-grid" id="sim-stats"></div>
-            </div>
-
-            <div class="sim-card" id="region-card">
-              <div class="sim-card-head">
-                <h3>8-Feature region inspector</h3>
-                <span id="region-count-badge">Candidates</span>
-              </div>
-              <div class="sim-region-list" id="region-list"></div>
-              <table class="sim-feat-table" aria-label="Extracted eight features compared with Report Table 6.1">
-                <thead>
-                  <tr>
-                    <th>Feature (§5.2.C)</th>
-                    <th>Selected</th>
-                    <th>Report Exudate</th>
-                    <th>Report Non-Ex</th>
-                  </tr>
-                </thead>
-                <tbody id="feat-tbody"></tbody>
-              </table>
-              <p class="sim-feat-note" id="feat-gt-note"></p>
-            </div>
-          </aside>
-        </div>
-
-        <div class="sim-attribution">
-          <strong>Dataset attribution &amp; terms:</strong> Image and ground-truth masks (<code>IDRiD_03.jpg</code>, <code>IDRiD_03_OD.tif</code>, <code>IDRiD_03_EX.tif</code>) from the Indian Diabetic Retinopathy Image Dataset (IDRiD) — Porwal et al., <em>Data</em> 2018, 3(3), 25 (<a href="https://doi.org/10.3390/data3030025" target="_blank" rel="noreferrer">DOI: 10.3390/data3030025</a>; Kaggle mirror cited in report), licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>. Modifications for this prototype: embedded 1/4-scale (1072 × 712) JPEG and 1/8-scale (536 × 356) binary masks processed live in-browser.
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <p class="eyebrow dark">03 · SYSTEM</p>
-      <h2>How the system fits together.</h2>
-      <div class="notes">
-        <p>
-          <span>01</span>
-          Group project on 81 annotated IDRiD fundus images. The scope is classical machine learning, with no deep learning. The work is registered in Indonesia as copyright No. 000938547, held by Institut Teknologi Bandung, with me listed as a co-creator.
-        </p>
-        <p>
-          <span>02</span>
-          Each photograph is resized with Lanczos resampling. The green channel is used because it carries the clearest vessel and exudate contrast; clip-limited CLAHE improves local contrast before unsharp masking emphasizes lesion edges.
-        </p>
-        <p>
-          <span>03</span>
-          A maximum-Renyi-entropy threshold selects bright candidate regions. The optic disc, also bright, is segmented in the same way and subtracted. Eight-connected component labeling turns the remaining mask into discrete regions.
-        </p>
-        <p>
-          <span>04</span>
-          Each candidate is described by eight features: area, mean, median, minimum, maximum, standard deviation, variance, and intensity range. Labels come from overlap with the ground-truth masks, so the evaluation classifies regions rather than pixels (report §5.3).
-        </p>
-      </div>
-    </section>
-
-    <section id="eval-section">
-      <p class="eyebrow dark">04 · EVALUATION</p>
-      <h2>What the region classifier scored.</h2>
-      <div class="eval-layout">
-        <div class="eval-table-wrap">
-          <table class="eval-table">
-            <thead>
-              <tr>
-                <th>Evaluation measure</th>
-                <th>Result</th>
-                <th>Condition / scope</th>
-                <th>Source</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>SVM (report-reported)</strong></td>
-                <td class="eval-val">86 / 87 / 86 / 86 %</td>
-                <td>Accuracy / precision / recall / F1 on candidate regions</td>
-                <td>Project report, Table 6.3</td>
-              </tr>
-              <tr>
-                <td><strong>Random Forest / KNN / LR</strong></td>
-                <td class="eval-val">84 / 85 / 84 % accuracy</td>
-                <td>RF 84 · KNN 85 · LR 84 on the same region classification</td>
-                <td>Project report, Table 6.3</td>
-              </tr>
-              <tr>
-                <td><strong>Dataset and scope</strong></td>
-                <td class="eval-val">81 IDRiD images</td>
-                <td>Exudate and optic-disc ground truth; classical ML only</td>
-                <td>Project report, scope statement</td>
-              </tr>
-              <tr>
-                <td><strong>Data split (as stated)</strong></td>
-                <td class="eval-val">80/20 vs 70/30</td>
-                <td>Methods §5.3 state 80/20; results §6.3.2 report 70/30 with StandardScaler and random_state 42; discrepancy acknowledged, not independently reproduced</td>
-                <td>Project report, methods and results sections</td>
-              </tr>
-              <tr>
-                <td><strong>Revision context</strong></td>
-                <td class="eval-val">86% vs 71% earlier</td>
-                <td>After Renyi-entropy candidate segmentation and the new 8-feature set</td>
-                <td>Project report, revision section</td>
-              </tr>
-              <tr>
-                <td><strong>Copyright registration</strong></td>
-                <td class="eval-val">No. 000938547</td>
-                <td>Listed co-creator; copyright holder Institut Teknologi Bandung</td>
-                <td>Indonesian copyright certificate, registration No. 000938547</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <aside class="eval-chart-card" aria-label="Classifier comparison chart from Project report Table 6.3">
-          <h3>Classifier accuracy (Table 6.3)</h3>
-          <p>Report-reported region-level accuracy on standardized 8-feature vectors (StandardScaler, random_state 42).</p>
-          <div class="bar-row">
-            <div class="bar-row-head"><span>SVM (RBF, C=1.0, balanced)</span><span>86%</span></div>
-            <div class="bar-track"><div class="bar-fill" style="width: 86%;"></div></div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-row-head"><span>KNN (n_neighbors=5)</span><span>85%</span></div>
-            <div class="bar-track"><div class="bar-fill muted" style="width: 85%;"></div></div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-row-head"><span>Random Forest (100 trees, balanced)</span><span>84%</span></div>
-            <div class="bar-track"><div class="bar-fill muted" style="width: 84%;"></div></div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-row-head"><span>Logistic Regression (balanced)</span><span>84%</span></div>
-            <div class="bar-track"><div class="bar-fill muted" style="width: 84%;"></div></div>
-          </div>
-          <div class="bar-note">
-            Note: Region classification (candidate overlap vs ground truth), not pixel-level segmentation. SVM precision 87%, recall 86%, F1 86%; RF 84/84/84; KNN 85/85/85; LR 83/83/83 (precision/recall/F1).
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <section class="limits">
-      <p class="eyebrow">05 · LIMITATIONS</p>
-      <h2>What the evidence does not show.</h2>
-      <p class="prose-p">
-        The reported metrics classify candidate regions, not pixels, and come from the project report rather than an independent reproduction. The methods and results sections state different train/test splits (80/20 and 70/30); that discrepancy is acknowledged rather than reconciled. The pipeline has not been clinically validated, and patient-level split hygiene and automated optic-disc localization remain future work.
-      </p>
-      <div class="detail-links-row">
-        <a class="button" href="https://github.com/farrellaa/Diabetic-Retinopathy-Exudate-Segmentation" target="_blank" rel="noreferrer">
-          GitHub: Diabetic-Retinopathy-Exudate-Segmentation ↗
-        </a>
-        <a class="button-secondary" href="#top">
-          ← All projects
-        </a>
-      </div>
-    </section>
-
-    <section class="next-plate-banner">
-      <div>
-        <span class="mono">NEXT PROJECT</span>
-        <h3>Project 04: Camera-Based Hand Tracking for Stroke Rehabilitation</h3>
-        <p>An Android app that tracks hand landmarks from the phone camera, estimates finger angles, and sends the motion data over Bluetooth to an ESP32 receiver in a stroke-rehabilitation prototype.</p>
-      </div>
-      <a class="button-dark" href="#top">Open Project 04 →</a>
-    </section>
+    <p class="walkthrough-note">
+      Browser processing demonstration on a sample IDRiD image; reported 86% accuracy is from the project report, not live classifier inference.
+    </p>
   </main>
-
-  <footer class="sketch-footer" aria-labelledby="footer-owner-name">
-    <div class="sketch-stage">
-      <div class="sketch-top">
-        <div class="sketch-brand">
-          <strong id="footer-owner-name">Muhammad Farrell Astrada Azhar</strong>
-          <p>Technical Project Manager, Juxtalabs · Biomedical instrumentation, embedded classification, and clinical data integration.</p>
-        </div>
-        <nav class="sketch-col" aria-label="Footer pages">
-          <h2 class="sketch-label">Pages</h2>
-          <a href="#top">Profile</a>
-          <a href="#top">Projects</a>
-          <a href="#eval-section">CV (PDF)</a>
-        </nav>
-        <section class="sketch-col" aria-labelledby="footer-contact-heading">
-          <h2 class="sketch-label" id="footer-contact-heading">Contact</h2>
-          <a href="mailto:farrellastrada@gmail.com">farrellastrada@gmail.com</a>
-          <a href="https://github.com/farrellaa" target="_blank" rel="noreferrer">github.com/farrellaa</a>
-          <a href="https://linkedin.com/in/farrellastrada" target="_blank" rel="noreferrer">linkedin.com/in/farrellastrada</a>
-          <p class="sketch-place">Bandung / Jakarta, Indonesia</p>
-        </section>
-      </div>
-      <nav class="sketch-projects" aria-labelledby="footer-projects-heading">
-        <h2 class="sketch-label" id="footer-projects-heading">Projects</h2>
-        <ul class="sketch-proj-grid">
-          <li><a href="#top"><span class="sketch-proj-num">01</span><span class="sketch-proj-title">Wearable Cognitive &amp; Physiological Stress Classification</span></a></li>
-          <li><a href="#top"><span class="sketch-proj-num">02</span><span class="sketch-proj-title">BITalino Biosignal Reader</span></a></li>
-          <li><a href="#top"><span class="sketch-proj-num">03</span><span class="sketch-proj-title">Diabetic Retinopathy Exudate Detection</span></a></li>
-          <li><a href="#top"><span class="sketch-proj-num">04</span><span class="sketch-proj-title">Camera-Based Hand Tracking for Stroke Rehabilitation</span></a></li>
-          <li><a href="#top"><span class="sketch-proj-num">05</span><span class="sketch-proj-title">Dobot Magician Sorting Cell and Remote Web Dashboard</span></a></li>
-          <li><a href="#top"><span class="sketch-proj-num">06</span><span class="sketch-proj-title">Healthcare Data Integration at Juxtalabs</span></a></li>
-        </ul>
-      </nav>
-    </div>
-    <div class="sketch-art" aria-hidden="true">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 220" preserveAspectRatio="xMidYMax slice" fill="none">
-        <path d="M-10 176q80-48 160-68t150 18q75 34 150-30t155-46q85 6 170 46t160-36q78-44 158 14t165 36q95 16 182 32" stroke="#9ea4ad" stroke-width="1.2" opacity="0.85" />
-        <path d="M90 218q110-44 215-78t195-24q90 22 175-42t165 38q95 44 190 52t190 36" stroke="#50565f" stroke-width="1.5" opacity="0.92" />
-        <path d="M-10 202q140-26 260-8t240 16q140 8 270-18t270 12q140 16 260-14t160 8" stroke="#3f444c" stroke-width="1.7" opacity="0.95" />
-      </svg>
-    </div>
-  </footer>
 
   <script>
     (function () {
@@ -1824,79 +404,47 @@ html, body { margin:0; padding:0; background:transparent; }
       const STAGES = [
         {
           id: '01',
-          name: 'Lanczos',
-          spec: 'Spatial standardization',
-          detail: 'Resizes the 4288 × 2848 IDRiD fundus photographs to 536 × 356 (1/8 scale) with Lanczos resampling, reducing computation while limiting aliasing. For single-file portability, the simulator loads a 1072 × 712 (1/4-scale) copy of IDRiD_03.jpg and runs live 2× Lanczos3 downsampling in-browser.',
-          plain: 'The 4288 × 2848 IDRiD_03 photograph is standardized down to 536 × 356 with Lanczos resampling so later steps run fast without blurring small lesions.'
+          shortLabel: '1 · Resize',
+          title: 'Resize (Lanczos resampling)',
+          desc: 'Downsamples the fundus photograph with Lanczos resampling so later stages run efficiently without blurring small lesion detail.'
         },
         {
           id: '02',
-          name: 'CLAHE',
-          spec: 'Green-channel equalization',
-          detail: 'Applies clip-limited adaptive histogram equalization on the green channel within the fundus aperture, which carries the clearest vessel and exudate contrast.',
-          plain: 'Contrast is boosted locally and gently on the green channel, where hard exudates stand out sharpest against the retina.'
+          shortLabel: '2 · Contrast',
+          title: 'Green-channel contrast (CLAHE)',
+          desc: 'Extracts the green channel—where vessels and bright exudates show clearest contrast—and boosts local contrast with clip-limited adaptive histogram equalization.'
         },
         {
           id: '03',
-          name: 'Unsharp',
-          spec: 'Edge sharpening',
-          detail: 'Subtracts a 5 × 5 Gaussian-blurred copy and adds the weighted difference back to sharpen hard exudate margins before thresholding.',
-          plain: 'Edges of bright lesions are sharpened so the later entropy threshold separates them cleanly from background glare.'
+          shortLabel: '3 · Sharpen',
+          title: 'Edge sharpening (unsharp mask)',
+          desc: 'Subtracts a Gaussian-blurred copy and adds back the weighted difference to sharpen bright lesion margins before thresholding.'
         },
         {
           id: '04',
-          name: 'Renyi Mask',
-          spec: 'Rényi entropy + IDRiD_03_OD mask',
-          detail: 'Computes the maximum-Rényi-entropy threshold (α = 2) to binarize bright candidates and subtracts the actual IDRiD_03_OD.tif optic-disc expert annotation (matching the notebook masking step rather than assuming a synthetic OD region). Note: report §6.2.1 instead uses automated Rényi thresholding for OD.',
-          plain: 'An entropy-based threshold marks bright candidate pixels, and the actual IDRiD_03_OD.tif optic-disc mask is subtracted so the bright disc is not counted as exudate.'
+          shortLabel: '4 · Threshold',
+          title: 'Rényi threshold & optic-disc removal',
+          desc: 'Applies maximum Rényi-entropy thresholding to isolate bright pixels and subtracts the annotated optic-disc region so the bright disc is excluded.'
         },
         {
           id: '05',
-          name: 'Classify',
-          spec: '8 features · Heuristic + EX.tif GT',
-          detail: 'Extracts eight intensity and area features per 8-connected candidate region. Bounding boxes reflect an illustrative client-side contrast heuristic paired with actual IDRiD_03_EX.tif ground-truth overlap — NOT a live scikit-learn SVM/RF/KNN/LR model. Table 6.3 metrics are report-reported.',
-          plain: 'Each candidate region is measured across eight features and compared against actual IDRiD_03_EX.tif annotations alongside an illustrative contrast heuristic.'
+          shortLabel: '5 · Candidate regions',
+          title: 'Candidate regions',
+          desc: 'Labels connected bright areas as candidate regions for feature extraction. Toggle Expert annotation below to compare against the dataset reference.'
         }
       ];
 
-      // Report Table 6.1 ground reference (mean ± SD)
-      const TABLE_6_1 = [
-        { key: 'area', name: 'Area (px)', ex: '91.75 ± 160.59', non: '133.94 ± 212.06' },
-        { key: 'std', name: 'Std Dev', ex: '13.54 ± 5.52', non: '7.26 ± 3.17' },
-        { key: 'max', name: 'Max Intensity', ex: '194.47 ± 21.15', non: '183.60 ± 16.82' },
-        { key: 'min', name: 'Min Intensity', ex: '145.91 ± 18.56', non: '154.12 ± 12.14' },
-        { key: 'median', name: 'Median', ex: '166.39 ± 19.55', non: '164.29 ± 13.20' },
-        { key: 'range', name: 'Intensity Range', ex: '48.56 ± 19.11', non: '29.47 ± 13.51' },
-        { key: 'variance', name: 'Variance', ex: '213.88 ± 182.49', non: '62.71 ± 62.23' },
-        { key: 'mean', name: 'Mean Intensity', ex: '167.19 ± 18.62', non: '165.13 ± 12.96' }
-      ];
-
-      const MODEL_PARAMS = {
-        svm: { name: 'SVM (RBF)', params: "kernel='rbf', C=1.0, gamma='scale', class_weight='balanced'", score: '86% acc · 87% prec · 86% rec · 86% F1' },
-        rf: { name: 'Random Forest', params: "n_estimators=100, class_weight='balanced'", score: '84% acc · 84% prec · 84% rec · 84% F1' },
-        knn: { name: 'KNN', params: 'n_neighbors=5', score: '85% acc · 85% prec · 85% rec · 85% F1' },
-        lr: { name: 'Logistic Regression', params: "max_iter=1000, class_weight='balanced'", score: '84% acc · 83% prec · 83% rec · 83% F1' }
-      };
+      const FIXED_CLAHE_CLIP = 2.0;
+      const FIXED_UNSHARP_WEIGHT = 0.5;
 
       const state = {
         stage: 0,
-        viewMode: 'split', // split | side | strip
-        beforeRef: 'raw',  // raw | prev
-        splitPct: 52,
-        clipLimit: 2.0,
-        unsharpWeight: 0.5,
-        maskSubView: 'final', // final | compare_od | od_only | ex_gt
-        model: 'svm',
-        showExGtOverlay: true,
-        selectedRegionIdx: 0,
-        playing: false,
-        playTimer: null
+        splitPct: 50,
+        showExpert: false
       };
 
-      // Precomputed buffers for active IDRiD_03 image + annotations + parameters
       const cache = {
         fovMask: new Uint8Array(W * H),
-        fovCount: 0,
         odGroundMask: new Uint8Array(W * H),
         exGroundMask: new Uint8Array(W * H),
         rawRGBA: null,
@@ -1904,14 +452,8 @@ html, body { margin:0; padding:0; background:transparent; }
         greenGray: null,
         claheGray: null,
         unsharpGray: null,
-        odBinary: null,
-        rawThreshBinary: null,
         finalBinary: null,
-        renyiThreshold: 0,
-        regions: [],
-        histRawGreen: new Uint32Array(256),
-        histClahe: new Uint32Array(256),
-        histUnsharp: new Uint32Array(256)
+        regions: []
       };
 
       function decodeRuns(runs, len) {
@@ -1924,9 +466,12 @@ html, body { margin:0; padding:0; background:transparent; }
         return mask;
       }
 
-      // Load the embedded 1/4-scale (1072x712) authentic IDRiD_03.jpg photograph,
-      // apply live browser Lanczos3 2x downsampling to 536x356 (1/8 of 4288x2848),
-      // detect the actual fundus aperture mask from real pixel values, and decode IDRiD_03_OD/EX masks.
+      function notifyParentHeight() {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'walkthrough-resize' }, '*');
+        }
+      }
+
       function initFromIDRiD03(onReady) {
         const SW = W * 2;
         const SH = H * 2;
@@ -1942,7 +487,6 @@ html, body { margin:0; padding:0; background:transparent; }
           cache.odGroundMask = decodeRuns(IDRiD03_OD_RUNS, W * H);
           cache.exGroundMask = decodeRuns(IDRiD03_EX_RUNS, W * H);
 
-          // True Lanczos-like windowed-sinc 2x downsample (a=3) + raw uninterpolated reference
           const lanczosRGBA = new Uint8ClampedArray(W * H * 4);
           const rawRGBA = new Uint8ClampedArray(W * H * 4);
           const greenGray = new Uint8ClampedArray(W * H);
@@ -1955,7 +499,6 @@ html, body { margin:0; padding:0; background:transparent; }
             return sinc(ax) * sinc(ax / 3);
           };
 
-          // Precompute 1D weights for half-pixel centers (2*dst + 0.5)
           const offsets = [-2, -1, 0, 1, 2, 3];
           const weights = offsets.map((k) => lanczos3(k - 0.5));
           const wSum = weights.reduce((a, b) => a + b, 0);
@@ -1966,7 +509,6 @@ html, body { margin:0; padding:0; background:transparent; }
               const idx = y * W + x;
               const p4 = idx * 4;
 
-              // Uninterpolated 2x subsampled preview from 1072x712 source
               const rx = Math.min(SW - 1, x * 2);
               const ry = Math.min(SH - 1, y * 2);
               const r4 = (ry * SW + rx) * 4;
@@ -1975,7 +517,6 @@ html, body { margin:0; padding:0; background:transparent; }
               rawRGBA[p4 + 2] = hiData[r4 + 2];
               rawRGBA[p4 + 3] = 255;
 
-              // 2D separable Lanczos3 convolution centered at (2x+0.5, 2y+0.5)
               let accR = 0, accG = 0, accB = 0;
               for (let ky = 0; ky < offsets.length; ky++) {
                 const sy = Math.max(0, Math.min(SH - 1, y * 2 + offsets[ky]));
@@ -1997,13 +538,10 @@ html, body { margin:0; padding:0; background:transparent; }
               lanczosRGBA[p4 + 2] = cb;
               lanczosRGBA[p4 + 3] = 255;
 
-              // Actual retinal aperture mask from dark border pixels
               fovRaw[idx] = Math.max(cr, cg, cb) > 15 ? 1 : 0;
             }
           }
 
-          // 1-pixel inner erosion on FOV so dark border ringing never skews histograms/edges
-          let fovCount = 0;
           for (let y = 0; y < H; y++) {
             for (let x = 0; x < W; x++) {
               const idx = y * W + x;
@@ -2020,25 +558,18 @@ html, body { margin:0; padding:0; background:transparent; }
                 }
               }
               cache.fovMask[idx] = inside;
-              if (inside) fovCount++;
               greenGray[idx] = inside ? lanczosRGBA[idx * 4 + 1] : 0;
             }
           }
 
-          cache.fovCount = fovCount;
           cache.rawRGBA = rawRGBA;
           cache.lanczosRGBA = lanczosRGBA;
           cache.greenGray = greenGray;
           onReady();
         };
-        img.onerror = () => {
-          const badgeEl = document.getElementById('region-count-badge');
-          if (badgeEl) badgeEl.textContent = 'Image decode error';
-        };
         img.src = IDRiD03_DATA_URI;
       }
 
-      // Compute Tile-based CLAHE (8x8 grid with bilinear interpolation) on FOV green channel
       function runCLAHE(gray, clipFactor) {
         const TX = 8;
         const TY = 8;
@@ -2071,7 +602,6 @@ html, body { margin:0; padding:0; background:transparent; }
               continue;
             }
 
-            // Clip limit proportional to uniform bin count
             const clipLimit = Math.max(1, (clipFactor * count) / 256);
             let excess = 0;
             for (let i = 0; i < 256; i++) {
@@ -2124,10 +654,8 @@ html, body { margin:0; padding:0; background:transparent; }
         return out;
       }
 
-      // Separable 5x5 Gaussian blur + Unsharp Masking: I_sharp = I + w * (I - I_blur)
       function runUnsharp(gray, weight) {
         const kernel = [1, 4, 6, 4, 1];
-        const kSum = 16;
         const tmp = new Float32Array(W * H);
         const out = new Uint8ClampedArray(W * H);
 
@@ -2180,7 +708,6 @@ html, body { margin:0; padding:0; background:transparent; }
         return h;
       }
 
-      // Maximum Renyi Entropy Threshold (order alpha = 2) on foreground/background FOV distribution
       function computeRenyiThreshold(hist, minT, maxT) {
         let total = 0;
         for (let i = 0; i < 256; i++) total += hist[i];
@@ -2195,9 +722,9 @@ html, body { margin:0; padding:0; background:transparent; }
         let bestH = -Infinity;
 
         for (let t = minT; t <= maxT; t++) {
-          let pA = 0, pB = 0;
+          let pA = 0;
           for (let i = 0; i <= t; i++) pA += p[i];
-          pB = 1.0 - pA;
+          const pB = 1.0 - pA;
           if (pA <= 1e-9 || pB <= 1e-9) continue;
 
           let sumA = 0, sumB = 0;
@@ -2218,8 +745,7 @@ html, body { margin:0; padding:0; background:transparent; }
         return bestT;
       }
 
-      // 8-Connected Component Labeling (Report §5.2.B) + 8-Feature Extraction (§5.2.C)
-      function labelAndExtract(binary, intensityGray) {
+      function extractCandidateBoxes(binary) {
         const labels = new Int32Array(W * H);
         const regions = [];
         let nextLabel = 1;
@@ -2235,23 +761,18 @@ html, body { margin:0; padding:0; background:transparent; }
             queue[tail++] = startIdx;
             labels[startIdx] = nextLabel;
 
-            const vals = [];
+            let area = 0;
             let minX = x, maxX = x, minY = y, maxY = y;
-            let sumX = 0, sumY = 0, odOverlap = 0, exOverlap = 0;
 
             while (head < tail) {
               const cur = queue[head++];
               const cx = cur % W;
               const cy = (cur - cx) / W;
-              vals.push(intensityGray[cur]);
-              sumX += cx;
-              sumY += cy;
+              area++;
               if (cx < minX) minX = cx;
               if (cx > maxX) maxX = cx;
               if (cy < minY) minY = cy;
               if (cy > maxY) maxY = cy;
-              if (cache.odGroundMask[cur]) odOverlap++;
-              if (cache.exGroundMask[cur]) exOverlap++;
 
               for (let d = 0; d < 8; d++) {
                 const nb = cur + dirs[d];
@@ -2265,85 +786,33 @@ html, body { margin:0; padding:0; background:transparent; }
               }
             }
 
-            if (vals.length >= 4) {
-              vals.sort((a, b) => a - b);
-              const area = vals.length;
-              let sum = 0;
-              for (let i = 0; i < area; i++) sum += vals[i];
-              const mean = sum / area;
-              let sq = 0;
-              for (let i = 0; i < area; i++) {
-                const dv = vals[i] - mean;
-                sq += dv * dv;
-              }
-              const variance = sq / area;
-              const std = Math.sqrt(variance);
-              const min = vals[0];
-              const max = vals[area - 1];
-              const median = area % 2 === 1
-                ? vals[(area - 1) >> 1]
-                : (vals[area / 2 - 1] + vals[area / 2]) / 2;
-              const range = max - min;
-
-              // Illustrative client-side contrast heuristic (NOT a trained scikit-learn classifier)
-              const score = (std * 1.45) + (range * 0.35) + (max * 0.18) - (area > 220 ? 18 : 0);
-              const isExudate = (odOverlap < area * 0.4) && score >= 52;
-
-              regions.push({
-                id: nextLabel,
-                cx: sumX / area,
-                cy: sumY / area,
-                minX, maxX, minY, maxY,
-                area, std, max, min, median, range, variance, mean,
-                score,
-                exOverlap,
-                isExudate
-              });
+            if (area >= 4) {
+              regions.push({ minX, maxX, minY, maxY });
             }
             nextLabel++;
           }
         }
-
-        // Sort heuristic positives and largest contrast candidates first
-        regions.sort((a, b) => (b.isExudate - a.isExudate) || (b.std - a.std));
         return regions;
       }
 
-      function recomputePipeline() {
-        cache.claheGray = runCLAHE(cache.greenGray, state.clipLimit);
-        cache.unsharpGray = runUnsharp(cache.claheGray, state.unsharpWeight);
-        cache.histRawGreen = computeHist(cache.greenGray);
-        cache.histClahe = computeHist(cache.claheGray);
-        cache.histUnsharp = computeHist(cache.unsharpGray);
+      function runPipeline() {
+        cache.claheGray = runCLAHE(cache.greenGray, FIXED_CLAHE_CLIP);
+        cache.unsharpGray = runUnsharp(cache.claheGray, FIXED_UNSHARP_WEIGHT);
+        const histUnsharp = computeHist(cache.unsharpGray);
+        const tRenyi = computeRenyiThreshold(histUnsharp, 145, 232);
 
-        // Renyi entropy thresholding (alpha = 2) on sharpened green channel
-        const tRenyi = computeRenyiThreshold(cache.histUnsharp, 145, 232);
-        cache.renyiThreshold = tRenyi;
-
-        const rawThresh = new Uint8Array(W * H);
-        const odMask = cache.odGroundMask; // Actual IDRiD_03_OD.tif expert annotation
         const finalMask = new Uint8Array(W * H);
-
         for (let i = 0; i < W * H; i++) {
           if (!cache.fovMask[i]) continue;
-          if (cache.unsharpGray[i] >= tRenyi) {
-            rawThresh[i] = 1;
-            if (!odMask[i]) finalMask[i] = 1;
+          if (cache.unsharpGray[i] >= tRenyi && !cache.odGroundMask[i]) {
+            finalMask[i] = 1;
           }
         }
-
-        cache.rawThreshBinary = rawThresh;
-        cache.odBinary = odMask;
         cache.finalBinary = finalMask;
-        cache.regions = labelAndExtract(finalMask, cache.unsharpGray);
-
-        if (state.selectedRegionIdx >= cache.regions.length) {
-          state.selectedRegionIdx = 0;
-        }
+        cache.regions = extractCandidateBoxes(finalMask);
       }
 
-      // Render a specific stage (0..4) or -1 (Raw RGB before) into a canvas
-      function renderStageToCanvas(canvas, stageIdx, opts = {}) {
+      function renderStageToCanvas(canvas, stageIdx) {
         if (!cache.lanczosRGBA) return;
         const ctx = canvas.getContext('2d');
         const img = ctx.createImageData(W, H);
@@ -2367,7 +836,6 @@ html, body { margin:0; padding:0; background:transparent; }
               data[p] = 6; data[p + 1] = 8; data[p + 2] = 10; data[p + 3] = 255;
             } else {
               const g = src[i];
-              // Subtle green-channel tint matching fundus green-channel visualization
               data[p] = Math.round(g * 0.78);
               data[p + 1] = g;
               data[p + 2] = Math.round(g * 0.80);
@@ -2378,45 +846,12 @@ html, body { margin:0; padding:0; background:transparent; }
           return;
         }
         if (stageIdx === 3) {
-          const sub = opts.maskSubView || state.maskSubView;
           for (let i = 0; i < W * H; i++) {
             const p = i * 4;
             if (!cache.fovMask[i]) {
               data[p] = 6; data[p + 1] = 8; data[p + 2] = 10; data[p + 3] = 255;
-              continue;
-            }
-            const isFin = cache.finalBinary[i] === 1;
-            const isOd = cache.odBinary[i] === 1 && cache.rawThreshBinary[i] === 1;
-            const isExGt = cache.exGroundMask[i] === 1;
-            if (sub === 'od_only') {
-              const inOd = cache.odBinary[i] === 1;
-              data[p] = inOd ? 245 : 18;
-              data[p + 1] = inOd ? 185 : 18;
-              data[p + 2] = inOd ? 70 : 22;
-              data[p + 3] = 255;
-            } else if (sub === 'compare_od') {
-              if (isOd) {
-                // Highlight bright pixels subtracted by actual IDRiD_03_OD.tif in amber-red
-                data[p] = 245; data[p + 1] = 105; data[p + 2] = 65; data[p + 3] = 255;
-              } else if (isFin) {
-                data[p] = 245; data[p + 1] = 250; data[p + 2] = 255; data[p + 3] = 255;
-              } else {
-                data[p] = 14; data[p + 1] = 16; data[p + 2] = 20; data[p + 3] = 255;
-              }
-            } else if (sub === 'ex_gt') {
-              if (isFin && isExGt) {
-                // Renyi candidate overlapping IDRiD_03_EX.tif ground truth (bright teal)
-                data[p] = 45; data[p + 1] = 232; data[p + 2] = 198; data[p + 3] = 255;
-              } else if (isFin) {
-                // Candidate outside EX.tif GT (bright blue)
-                data[p] = 96; data[p + 1] = 165; data[p + 2] = 250; data[p + 3] = 255;
-              } else if (isExGt) {
-                // Annotated EX.tif pixel missed by global Renyi threshold (amber)
-                data[p] = 217; data[p + 1] = 119; data[p + 2] = 48; data[p + 3] = 255;
-              } else {
-                data[p] = 14; data[p + 1] = 16; data[p + 2] = 20; data[p + 3] = 255;
-              }
             } else {
+              const isFin = cache.finalBinary[i] === 1;
               const v = isFin ? 250 : 14;
               data[p] = v; data[p + 1] = v; data[p + 2] = isFin ? 255 : 18; data[p + 3] = 255;
             }
@@ -2425,17 +860,16 @@ html, body { margin:0; padding:0; background:transparent; }
           return;
         }
         if (stageIdx === 4) {
-          // Overlay region heuristic boxes (+ optional IDRiD_03_EX.tif GT tint) onto fundus view
           data.set(cache.lanczosRGBA);
           for (let i = 0; i < W * H; i++) {
             const p = i * 4;
-            let r = Math.round(data[p] * 0.76);
-            let g = Math.round(data[p + 1] * 0.76);
-            let b = Math.round(data[p + 2] * 0.76);
-            if (state.showExGtOverlay && cache.exGroundMask[i]) {
+            let r = Math.round(data[p] * 0.82);
+            let g = Math.round(data[p + 1] * 0.82);
+            let b = Math.round(data[p + 2] * 0.82);
+            if (state.showExpert && cache.exGroundMask[i]) {
               r = Math.round(r * 0.45 + 34 * 0.55);
-              g = Math.min(255, Math.round(g * 0.45 + 220 * 0.55));
-              b = Math.round(b * 0.45 + 140 * 0.55);
+              g = Math.min(255, Math.round(g * 0.45 + 210 * 0.55));
+              b = Math.round(b * 0.45 + 110 * 0.55);
             }
             data[p] = r;
             data[p + 1] = g;
@@ -2443,425 +877,80 @@ html, body { margin:0; padding:0; background:transparent; }
           }
           ctx.putImageData(img, 0, 0);
 
-          // Highlight bounding boxes of detected 8-connected regions
-          cache.regions.forEach((reg, idx) => {
-            const isSel = idx === state.selectedRegionIdx;
-            const col = reg.isExudate ? '#2dd4bf' : '#fb7185';
-            ctx.save();
-            ctx.strokeStyle = isSel ? '#ffffff' : col;
-            ctx.lineWidth = isSel ? 2.5 : 1.5;
-            ctx.strokeRect(reg.minX - 3, reg.minY - 3, (reg.maxX - reg.minX) + 6, (reg.maxY - reg.minY) + 6);
-            if (isSel) {
-              ctx.strokeStyle = col;
-              ctx.lineWidth = 1.5;
-              ctx.strokeRect(reg.minX - 6, reg.minY - 6, (reg.maxX - reg.minX) + 12, (reg.maxY - reg.minY) + 12);
-            }
-            ctx.restore();
+          ctx.save();
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 1.75;
+          cache.regions.forEach((reg) => {
+            ctx.strokeRect(
+              reg.minX - 2,
+              reg.minY - 2,
+              (reg.maxX - reg.minX) + 4,
+              (reg.maxY - reg.minY) + 4
+            );
           });
+          ctx.restore();
         }
       }
 
-      function renderHistogram() {
-        const canvas = document.getElementById('hist-canvas');
-        const ctx = canvas.getContext('2d');
-        const cw = canvas.width;
-        const ch = canvas.height;
-        ctx.clearRect(0, 0, cw, ch);
+      function updateViewport() {
+        renderStageToCanvas(document.getElementById('canvas-before'), -1);
+        renderStageToCanvas(document.getElementById('canvas-after'), state.stage);
 
-        let beforeH = cache.histRawGreen;
-        let afterH = cache.histRawGreen;
-        if (state.stage === 1) {
-          beforeH = cache.histRawGreen;
-          afterH = cache.histClahe;
-        } else if (state.stage >= 2) {
-          beforeH = state.stage === 2 ? cache.histClahe : cache.histRawGreen;
-          afterH = cache.histUnsharp;
-        }
-
-        let maxVal = 1;
-        for (let i = 5; i < 254; i++) {
-          if (beforeH[i] > maxVal) maxVal = beforeH[i];
-          if (afterH[i] > maxVal) maxVal = afterH[i];
-        }
-
-        // Subtle baseline grid
-        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-        ctx.lineWidth = 1;
-        for (let g = 1; g < 4; g++) {
-          const y = Math.round((ch * g) / 4) + 0.5;
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(cw, y);
-          ctx.stroke();
-        }
-
-        const drawCurve = (hist, fill, stroke) => {
-          ctx.beginPath();
-          ctx.moveTo(0, ch);
-          for (let i = 0; i < 256; i++) {
-            const x = (i / 255) * cw;
-            const y = ch - Math.min(1, hist[i] / maxVal) * (ch - 14);
-            ctx.lineTo(x, y);
-          }
-          ctx.lineTo(cw, ch);
-          ctx.closePath();
-          ctx.fillStyle = fill;
-          ctx.fill();
-
-          ctx.beginPath();
-          for (let i = 0; i < 256; i++) {
-            const x = (i / 255) * cw;
-            const y = ch - Math.min(1, hist[i] / maxVal) * (ch - 14);
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-          }
-          ctx.strokeStyle = stroke;
-          ctx.lineWidth = 1.5;
-          ctx.stroke();
-        };
-
-        drawCurve(beforeH, 'rgba(125, 135, 148, 0.25)', '#7d8794');
-        drawCurve(afterH, 'rgba(56, 189, 248, 0.24)', '#38bdf8');
-
-        const legendThresh = document.getElementById('legend-thresh');
-        if (state.stage >= 3) {
-          legendThresh.hidden = false;
-          const tx = (cache.renyiThreshold / 255) * cw;
-          ctx.strokeStyle = '#f2b705';
-          ctx.lineWidth = 2;
-          ctx.setLineDash([4, 3]);
-          ctx.beginPath();
-          ctx.moveTo(tx, 6);
-          ctx.lineTo(tx, ch);
-          ctx.stroke();
-          ctx.setLineDash([]);
-          ctx.fillStyle = '#f2b705';
-          ctx.font = '700 10px Manrope, sans-serif';
-          ctx.fillText(`T*=${cache.renyiThreshold}`, Math.min(cw - 48, tx + 4), 14);
-        } else {
-          legendThresh.hidden = true;
-        }
-      }
-
-      function renderTelemetryAndRegions() {
-        const statsEl = document.getElementById('sim-stats');
-        const exCount = cache.regions.filter((r) => r.isExudate).length;
-        const gtHitCount = cache.regions.filter((r) => r.exOverlap > 0).length;
-
-        let odPixels = 0;
-        let finPixels = 0;
-        for (let i = 0; i < W * H; i++) {
-          if (cache.odBinary[i] && cache.rawThreshBinary[i]) odPixels++;
-          if (cache.finalBinary[i]) finPixels++;
-        }
-
-        const stats = [
-          { label: 'Working grid (FOV px)', val: `${W} × ${H} (${cache.fovCount.toLocaleString()})` },
-          { label: 'CLAHE clip / Unsharp ω', val: `${state.clipLimit.toFixed(1)} · ω=${state.unsharpWeight.toFixed(1)}` },
-          { label: 'Rényi threshold T*', val: `${cache.renyiThreshold} / 255 (${finPixels.toLocaleString()} px)` },
-          { label: 'IDRiD_03_OD removed', val: `${odPixels.toLocaleString()} px` },
-          { label: '8-connected regions', val: `${cache.regions.length} total` },
-          { label: 'Heuristic vs EX.tif GT', val: `${exCount} heur-ex · ${gtHitCount} hit GT` }
-        ];
-
-        statsEl.innerHTML = stats.map((s) => (
-          `<div class="sim-stat"><small>${s.label}</small><strong>${s.val}</strong></div>`
-        )).join('');
-
-        // Region inspector
-        const listEl = document.getElementById('region-list');
-        const badgeEl = document.getElementById('region-count-badge');
-        badgeEl.textContent = `${cache.regions.length} candidates (${gtHitCount} overlap EX.tif)`;
-
-        listEl.innerHTML = cache.regions.map((reg, idx) => (
-          `<button type="button" class="sim-region-btn${idx === state.selectedRegionIdx ? ' selected' : ''}" data-reg-idx="${idx}">
-            <span>Candidate #${reg.id} · ${reg.area} px (GT ${reg.exOverlap}/${reg.area})</span>
-            <span class="${reg.isExudate ? 'sim-pill-ex' : 'sim-pill-non'}">
-              ${reg.isExudate ? 'Heur: Ex' : 'Heur: Non-Ex'}
-            </span>
-          </button>`
-        )).join('');
-
-        listEl.querySelectorAll('button').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            state.selectedRegionIdx = Number(btn.dataset.regIdx);
-            updateViewports();
-            renderTelemetryAndRegions();
-          });
-        });
-
-        const tbody = document.getElementById('feat-tbody');
-        const gtNoteEl = document.getElementById('feat-gt-note');
-        const sel = cache.regions[state.selectedRegionIdx];
-        if (!sel) {
-          tbody.innerHTML = '<tr><td colspan="4">No 8-connected regions above threshold.</td></tr>';
-          if (gtNoteEl) gtNoteEl.textContent = '';
-          return;
-        }
-        tbody.innerHTML = TABLE_6_1.map((row) => {
-          const val = row.key === 'area' ? String(sel.area) : sel[row.key].toFixed(2);
-          return `<tr>
-            <td>${row.name}</td>
-            <td><strong>${val}</strong></td>
-            <td>${row.ex}</td>
-            <td>${row.non}</td>
-          </tr>`;
-        }).join('');
-
-        if (gtNoteEl) {
-          const gtPct = ((sel.exOverlap / sel.area) * 100).toFixed(0);
-          gtNoteEl.textContent = `Selected #${sel.id}: Heuristic score ${sel.score.toFixed(1)} (${sel.isExudate ? 'Exudate' : 'Non-exudate'}, threshold ≥ 52 — illustrative JS heuristic, not SVM/RF/KNN/LR) · Actual IDRiD_03_EX.tif overlap: ${sel.exOverlap}/${sel.area} px (${gtPct}%).`;
-        }
-      }
-
-      function renderSubcontrols() {
-        const el = document.getElementById('step-subcontrols');
-        let html = `
-          <div class="sim-param" style="flex: 0 1 auto;">
-            <label for="before-ref-select">Before reference</label>
-            <select id="before-ref-select" class="sim-select" style="min-height:36px;">
-              <option value="raw"${state.beforeRef === 'raw' ? ' selected' : ''}>00 · Uninterpolated IDRiD_03 sample</option>
-              <option value="prev"${state.beforeRef === 'prev' ? ' selected' : ''}>Previous pipeline step</option>
-            </select>
-          </div>
-        `;
-
-        if (state.stage === 1) {
-          html += `
-            <div class="sim-param">
-              <label for="clahe-clip">CLAHE clip limit</label>
-              <input type="range" id="clahe-clip" min="1.2" max="4.5" step="0.1" value="${state.clipLimit}" />
-              <output id="clahe-clip-out">${state.clipLimit.toFixed(1)}</output>
-            </div>
-          `;
-        } else if (state.stage === 2) {
-          html += `
-            <div class="sim-param">
-              <label for="unsharp-w">Unsharp weight (ω)</label>
-              <input type="range" id="unsharp-w" min="0.2" max="2.2" step="0.1" value="${state.unsharpWeight}" />
-              <output id="unsharp-w-out">${state.unsharpWeight.toFixed(1)}</output>
-            </div>
-          `;
-        } else if (state.stage === 3) {
-          html += `
-            <div class="sim-param" style="flex: 1 1 280px;">
-              <label for="mask-sub-select">Mask inspection</label>
-              <select id="mask-sub-select" class="sim-select" style="min-height:36px;">
-                <option value="final"${state.maskSubView === 'final' ? ' selected' : ''}>Final candidate mask (after IDRiD_03_OD.tif subtraction)</option>
-                <option value="compare_od"${state.maskSubView === 'compare_od' ? ' selected' : ''}>Show subtracted IDRiD_03_OD.tif overlap in amber-red</option>
-                <option value="od_only"${state.maskSubView === 'od_only' ? ' selected' : ''}>Actual IDRiD_03_OD.tif annotation only</option>
-                <option value="ex_gt"${state.maskSubView === 'ex_gt' ? ' selected' : ''}>Compare vs IDRiD_03_EX.tif GT (teal=hit, amber=missed)</option>
-              </select>
-            </div>
-          `;
-        } else if (state.stage === 4) {
-          const m = MODEL_PARAMS[state.model];
-          html += `
-            <div class="sim-param" style="flex: 1 1 260px;">
-              <label for="model-select">Report classifier (§6.3.2)</label>
-              <select id="model-select" class="sim-select" style="min-height:36px;">
-                <option value="svm"${state.model === 'svm' ? ' selected' : ''}>SVM (RBF) — 86% F1 (Table 6.3)</option>
-                <option value="knn"${state.model === 'knn' ? ' selected' : ''}>KNN (k=5) — 85% F1 (Table 6.3)</option>
-                <option value="rf"${state.model === 'rf' ? ' selected' : ''}>Random Forest (100 trees) — 84% F1 (Table 6.3)</option>
-                <option value="lr"${state.model === 'lr' ? ' selected' : ''}>Logistic Regression — 84% acc / 83% F1</option>
-              </select>
-            </div>
-            <label class="sim-check">
-              <input type="checkbox" id="ex-gt-toggle"${state.showExGtOverlay ? ' checked' : ''} />
-              Overlay IDRiD_03_EX.tif GT
-            </label>
-            <div style="font-size:11.5px; color:#b8cddd; flex: 1 1 100%;">
-              <strong>${m.name} (Report Table 6.3):</strong> <code>${m.params}</code> · ${m.score}. <em>Note:</em> This dropdown displays the report's benchmark parameters only; bounding boxes on <code>IDRiD_03.jpg</code> use the illustrative JS contrast heuristic (teal = score ≥ 52, rose = score &lt; 52) alongside green-tinted <code>IDRiD_03_EX.tif</code> ground truth — not a live trained model.
-            </div>
-          `;
-        } else {
-          html += `
-            <div style="font-size:12px; color:#b8cddd;">
-              Source IDRiD_03.jpg: 4288 × 2848 → 1072 × 712 (embedded 1/4) → 536 × 356 px (browser 1/8 Lanczos3).
-            </div>
-          `;
-        }
-
-        el.innerHTML = html;
-
-        const beforeSel = document.getElementById('before-ref-select');
-        if (beforeSel) {
-          beforeSel.addEventListener('change', (e) => {
-            state.beforeRef = e.target.value;
-            updateViewports();
-          });
-        }
-        const clipEl = document.getElementById('clahe-clip');
-        if (clipEl) {
-          clipEl.addEventListener('input', (e) => {
-            state.clipLimit = Number(e.target.value);
-            document.getElementById('clahe-clip-out').textContent = state.clipLimit.toFixed(1);
-            recomputePipeline();
-            updateViewports();
-            renderHistogram();
-            renderTelemetryAndRegions();
-          });
-        }
-        const unsharpEl = document.getElementById('unsharp-w');
-        if (unsharpEl) {
-          unsharpEl.addEventListener('input', (e) => {
-            state.unsharpWeight = Number(e.target.value);
-            document.getElementById('unsharp-w-out').textContent = state.unsharpWeight.toFixed(1);
-            recomputePipeline();
-            updateViewports();
-            renderHistogram();
-            renderTelemetryAndRegions();
-          });
-        }
-        const maskSel = document.getElementById('mask-sub-select');
-        if (maskSel) {
-          maskSel.addEventListener('change', (e) => {
-            state.maskSubView = e.target.value;
-            updateViewports();
-          });
-        }
-        const modelSel = document.getElementById('model-select');
-        if (modelSel) {
-          modelSel.addEventListener('change', (e) => {
-            state.model = e.target.value;
-            renderSubcontrols();
-          });
-        }
-        const exGtToggle = document.getElementById('ex-gt-toggle');
-        if (exGtToggle) {
-          exGtToggle.addEventListener('change', (e) => {
-            state.showExGtOverlay = e.target.checked;
-            updateViewports();
-          });
-        }
-      }
-
-      function getBeforeStageIdx() {
-        if (state.beforeRef === 'prev') {
-          return state.stage === 0 ? -1 : state.stage - 1;
-        }
-        return -1;
-      }
-
-      function getStageLabel(idx) {
-        if (idx === -1) return 'IDRiD_03 source (1072×712 sample)';
-        return `Step ${STAGES[idx].id} · ${STAGES[idx].name}`;
-      }
-
-      function updateViewports() {
-        const beforeIdx = getBeforeStageIdx();
-        const afterIdx = state.stage;
-
-        // Split view
-        const cBefore = document.getElementById('canvas-before');
-        const cAfter = document.getElementById('canvas-after');
-        renderStageToCanvas(cBefore, beforeIdx);
-        renderStageToCanvas(cAfter, afterIdx);
-        document.getElementById('before-pill').textContent = `BEFORE · ${getStageLabel(beforeIdx)}`;
-        document.getElementById('after-pill').textContent = `AFTER · ${getStageLabel(afterIdx)}`;
-
-        const wrap = document.getElementById('compare-wrap');
-        wrap.classList.toggle('interactive-detect', afterIdx === 4);
-
-        // Apply split clip via clip-path so canvas pixels stay crisp 1:1
         const pct = state.splitPct;
         document.getElementById('before-clip').style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
         document.getElementById('split-divider').style.left = `${pct}%`;
         document.getElementById('split-range').value = pct;
         document.getElementById('split-val').textContent = `${pct}%`;
 
-        // Side-by-side view
-        if (state.viewMode === 'side') {
-          renderStageToCanvas(document.getElementById('canvas-side-before'), beforeIdx);
-          renderStageToCanvas(document.getElementById('canvas-side-after'), afterIdx);
-          document.getElementById('side-before-label').textContent = getStageLabel(beforeIdx);
-          document.getElementById('side-after-label').textContent = getStageLabel(afterIdx);
-        }
-
-        // 5-step filmstrip view
-        if (state.viewMode === 'strip') {
-          const grid = document.getElementById('filmstrip-grid');
-          grid.innerHTML = STAGES.map((s, i) => `
-            <button type="button" class="sim-film-card${i === state.stage ? ' active' : ''}" data-step="${i}">
-              <canvas width="536" height="356" id="strip-c-${i}"></canvas>
-              <div class="sim-film-meta">
-                <span>STEP ${s.id}</span>
-                <strong>${s.name}</strong>
-              </div>
-            </button>
-          `).join('');
-          STAGES.forEach((_, i) => {
-            renderStageToCanvas(document.getElementById(`strip-c-${i}`), i);
-          });
-          grid.querySelectorAll('.sim-film-card').forEach((card) => {
-            card.addEventListener('click', () => setStage(Number(card.dataset.step)));
-          });
-        }
+        const rightLabel = state.stage === 4 ? 'Candidate regions' : 'Processed';
+        document.getElementById('after-tag').textContent = rightLabel;
       }
 
-      function renderTabs() {
-        const heroBar = document.getElementById('hero-tablist');
-        const sec2Bar = document.getElementById('sec2-stagebar');
-
-        heroBar.innerHTML = STAGES.map((s, i) => `
+      function renderControls() {
+        const container = document.getElementById('step-buttons');
+        container.innerHTML = STAGES.map((s, i) => `
           <button
             type="button"
             role="tab"
-            id="hero-tab-${s.id}"
+            id="step-tab-${i}"
             aria-selected="${state.stage === i}"
-            aria-controls="hero-stage-detail-panel"
+            class="step-btn"
+            data-idx="${i}"
             tabindex="${state.stage === i ? 0 : -1}"
-            class="${state.stage === i ? 'hatched-seg active-seg' : 'hatched-seg'}"
-            data-idx="${i}"
-          >
-            <span class="seg-num">${s.id}</span>
-            <strong>${s.name}</strong>
-            <small>${s.spec}</small>
-          </button>
+          >${s.shortLabel}</button>
         `).join('');
 
-        sec2Bar.innerHTML = STAGES.map((s, i) => `
-          <button
-            type="button"
-            class="${state.stage === i ? 'on' : ''}"
-            aria-pressed="${state.stage === i}"
-            aria-controls="stage-detail-panel"
-            data-idx="${i}"
-          >
-            ${s.id} · ${s.name}
-            <span>${s.spec}</span>
-          </button>
-        `).join('');
-
-        heroBar.querySelectorAll('button').forEach((btn) => {
-          btn.addEventListener('click', () => setStage(Number(btn.dataset.idx)));
-        });
-        sec2Bar.querySelectorAll('button').forEach((btn) => {
+        container.querySelectorAll('button').forEach((btn) => {
           btn.addEventListener('click', () => setStage(Number(btn.dataset.idx)));
         });
 
         const cur = STAGES[state.stage];
-        document.getElementById('hero-step-label').textContent = `STEP ${cur.id} · ${cur.name}`;
-        document.getElementById('hero-step-plain').textContent = cur.plain;
-        document.getElementById('sec2-step-num').textContent = `STEP ${cur.id} OF ${STAGES.length} · ${cur.name.toUpperCase()}`;
-        document.getElementById('sec2-step-spec').textContent = cur.spec;
-        document.getElementById('sec2-step-detail').textContent = cur.detail;
+        document.getElementById('step-title').textContent = `Step ${state.stage + 1} of ${STAGES.length} · ${cur.title}`;
+        document.getElementById('step-desc').textContent = cur.desc;
+
+        document.getElementById('prev-step').disabled = state.stage === 0;
+        document.getElementById('next-step').disabled = state.stage === STAGES.length - 1;
+
+        const expertRow = document.getElementById('expert-row');
+        expertRow.hidden = state.stage !== 4;
+        document.getElementById('expert-legend').textContent = state.showExpert
+          ? 'Cyan outline: candidate regions · Green tint: expert annotation'
+          : 'Cyan outline: candidate regions';
+
+        notifyParentHeight();
       }
 
-      function setStage(idx, focusHeroTab = false) {
-        state.stage = idx;
-        renderTabs();
-        renderSubcontrols();
-        updateViewports();
-        renderHistogram();
-        if (focusHeroTab) {
-          const btn = document.getElementById(`hero-tab-${STAGES[idx].id}`);
-          if (btn) btn.focus();
+      function setStage(idx, focusTab = false) {
+        state.stage = Math.max(0, Math.min(STAGES.length - 1, idx));
+        renderControls();
+        updateViewport();
+        if (focusTab) {
+          const tab = document.getElementById(`step-tab-${state.stage}`);
+          if (tab) tab.focus();
         }
       }
 
-      // Keyboard navigation on hero tablist
-      document.getElementById('hero-tablist').addEventListener('keydown', (e) => {
+      document.getElementById('step-buttons').addEventListener('keydown', (e) => {
         const n = STAGES.length;
         let next = -1;
         if (e.key === 'ArrowRight') next = (state.stage + 1) % n;
@@ -2874,11 +963,22 @@ html, body { margin:0; padding:0; background:transparent; }
         }
       });
 
-      // Split wipe drag & range input
-      const splitRange = document.getElementById('split-range');
-      splitRange.addEventListener('input', (e) => {
+      document.getElementById('prev-step').addEventListener('click', () => {
+        setStage(state.stage - 1);
+      });
+      document.getElementById('next-step').addEventListener('click', () => {
+        setStage(state.stage + 1);
+      });
+
+      document.getElementById('expert-check').addEventListener('change', (e) => {
+        state.showExpert = e.target.checked;
+        renderControls();
+        updateViewport();
+      });
+
+      document.getElementById('split-range').addEventListener('input', (e) => {
         state.splitPct = Number(e.target.value);
-        updateViewports();
+        updateViewport();
       });
 
       const compareWrap = document.getElementById('compare-wrap');
@@ -2887,27 +987,13 @@ html, body { margin:0; padding:0; background:transparent; }
         const rect = compareWrap.getBoundingClientRect();
         const pct = Math.max(0, Math.min(100, Math.round(((clientX - rect.left) / rect.width) * 100)));
         state.splitPct = pct;
-        updateViewports();
+        updateViewport();
       }
+
       compareWrap.addEventListener('pointerdown', (e) => {
-        // In Step 05, clicking directly inside a candidate region selects it!
-        if (state.stage === 4) {
-          const rect = compareWrap.getBoundingClientRect();
-          const px = ((e.clientX - rect.left) / rect.width) * W;
-          const py = ((e.clientY - rect.top) / rect.height) * H;
-          const hit = cache.regions.findIndex((r) =>
-            px >= r.minX - 6 && px <= r.maxX + 6 && py >= r.minY - 6 && py <= r.maxY + 6
-          );
-          if (hit >= 0) {
-            state.selectedRegionIdx = hit;
-            updateViewports();
-            renderTelemetryAndRegions();
-            return;
-          }
-        }
         dragging = true;
         compareWrap.setPointerCapture(e.pointerId);
-        setSplitFromPointer(e.pointerX ?? e.clientX);
+        setSplitFromPointer(e.clientX);
       });
       compareWrap.addEventListener('pointermove', (e) => {
         if (!dragging) return;
@@ -2916,53 +1002,11 @@ html, body { margin:0; padding:0; background:transparent; }
       compareWrap.addEventListener('pointerup', () => { dragging = false; });
       compareWrap.addEventListener('pointercancel', () => { dragging = false; });
 
-      // View mode buttons
-      function setViewMode(mode) {
-        state.viewMode = mode;
-        document.getElementById('view-split').hidden = mode !== 'split';
-        document.getElementById('view-side').hidden = mode !== 'side';
-        document.getElementById('view-strip').hidden = mode !== 'strip';
-        document.getElementById('mode-split').setAttribute('aria-pressed', String(mode === 'split'));
-        document.getElementById('mode-side').setAttribute('aria-pressed', String(mode === 'side'));
-        document.getElementById('mode-strip').setAttribute('aria-pressed', String(mode === 'strip'));
-        updateViewports();
-      }
-      document.getElementById('mode-split').addEventListener('click', () => setViewMode('split'));
-      document.getElementById('mode-side').addEventListener('click', () => setViewMode('side'));
-      document.getElementById('mode-strip').addEventListener('click', () => setViewMode('strip'));
-
-      // Sequence playback
-      const playBtn = document.getElementById('play-seq-btn');
-      function stopPlayback() {
-        state.playing = false;
-        if (state.playTimer) {
-          clearInterval(state.playTimer);
-          state.playTimer = null;
-        }
-        playBtn.setAttribute('aria-pressed', 'false');
-        playBtn.textContent = '▶ Play 01→05';
-      }
-      playBtn.addEventListener('click', () => {
-        if (state.playing) {
-          stopPlayback();
-        } else {
-          state.playing = true;
-          playBtn.setAttribute('aria-pressed', 'true');
-          playBtn.textContent = '❚❚ Pause sequence';
-          state.playTimer = setInterval(() => {
-            setStage((state.stage + 1) % STAGES.length);
-          }, 1800);
-        }
-      });
-
-      // Initial render
-      renderTabs();
-      renderSubcontrols();
+      renderControls();
       initFromIDRiD03(() => {
-        recomputePipeline();
-        updateViewports();
-        renderHistogram();
-        renderTelemetryAndRegions();
+        runPipeline();
+        updateViewport();
+        notifyParentHeight();
       });
     })();
   </script>
