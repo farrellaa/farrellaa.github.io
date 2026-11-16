@@ -114,19 +114,22 @@
       position: absolute;
       top: 10px;
       z-index: 7;
-      background: rgba(16, 17, 20, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.22);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: rgba(16, 17, 20, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.24);
       color: #ffffff;
       font-size: 11px;
       font-weight: 600;
-      line-height: 1.2;
-      padding: 4px 10px;
+      line-height: 1.25;
+      padding: 5px 10px;
       border-radius: 999px;
       pointer-events: none;
-      max-width: 42%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      max-width: calc(50% - 16px);
+      white-space: normal;
+      overflow-wrap: break-word;
     }
 
     .corner-tag.left { left: 10px; }
@@ -192,8 +195,15 @@
     }
 
     .step-btn {
-      min-height: 40px;
-      padding: 6px 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 44px;
+      padding: 8px 13px;
+      line-height: 1.25;
+      white-space: normal;
+      max-width: 100%;
       border-radius: 8px;
       border: 1px solid var(--line);
       background: var(--foam);
@@ -223,8 +233,15 @@
     }
 
     .arrow-btn {
-      min-height: 40px;
-      padding: 6px 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 44px;
+      padding: 8px 14px;
+      line-height: 1.25;
+      white-space: normal;
+      max-width: 100%;
       border-radius: 999px;
       border: 1px solid var(--line);
       background: var(--foam);
@@ -285,7 +302,9 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      min-height: 36px;
+      min-height: 44px;
+      padding: 4px 0;
+      line-height: 1.3;
       font-size: 13px;
       font-weight: 600;
       color: var(--ink);
@@ -391,6 +410,7 @@
 
     .hist-plot-wrap {
       width: 100%;
+      padding: 8px 10px;
       background: var(--foam);
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -515,7 +535,7 @@
     </section>
 
     <p class="walkthrough-note">
-      Browser processing demonstration on a sample IDRiD image; reported 86% accuracy is from the project report, not live classifier inference.
+      Browser processing demonstration on a sample IDRiD image; reported 86% accuracy, 87% precision, 86% recall, and 86% F1 are from the project report's SVM candidate-region classifier, not live browser inference.
     </p>
   </main>
 
@@ -1439,6 +1459,12 @@
 
       renderControls();
       renderHistogram();
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+          renderHistogram();
+          notifyParentHeight();
+        });
+      }
       initFromIDRiD03(() => {
         runPipeline();
         updateViewport();
