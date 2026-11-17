@@ -1,5 +1,5 @@
-Favicon adapted from Twemoji's person, medium-light skin tone (U+1F9D1 U+1F3FC).
-Copyright Twitter, Inc and other contributors. Graphics licensed under CC BY 4.0.
-https://github.com/twitter/twemoji
-https://creativecommons.org/licenses/by/4.0/
-Modification: hair changed to black (#171717). Skin tone retained as medium-light (#F3D2A2).
+Portfolio Favicon Assets (Memoji-Style 3D Avatar)
+- Active production files: public/favicon-memoji-32.png (32x32 RGBA PNG), public/apple-touch-icon-memoji.png (180x180 RGBA PNG), public/favicon.ico (multi-size 16x16, 32x32, 48x48 RGBA ICO).
+- Source master: output/favicon/memoji-avatar-source.png (1024x1024 RGBA PNG), derived from original AI-generated raster artwork created with the Antigravity generate_image tool for this portfolio.
+- Styling preserved: black hair (#171717 range), medium-light warm skin (#F3D2A2 range), friendly neutral expression, close-cropped head on a transparent background.
+- Supersedes the previous Twemoji-adapted icon (Twitter, Inc., CC BY 4.0), whose archived files remain in output/favicon/backup/. No Twemoji or CC BY 4.0 assets remain active in public/.
