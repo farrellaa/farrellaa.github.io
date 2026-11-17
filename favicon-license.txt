@@ -1,0 +1,5 @@
+Favicon adapted from Twemoji's person, medium-light skin tone (U+1F9D1 U+1F3FC).
+Copyright Twitter, Inc and other contributors. Graphics licensed under CC BY 4.0.
+https://github.com/twitter/twemoji
+https://creativecommons.org/licenses/by/4.0/
+Modification: hair changed to black (#171717). Skin tone retained as medium-light (#F3D2A2).
